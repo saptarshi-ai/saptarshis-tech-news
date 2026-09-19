@@ -1,0 +1,3 @@
+﻿# requirements.txt -- AI Generated LinkedIn (Saptarshi's Tech Hub)
+# Add packages here. Pin versions once stable.
+# Install: pip install -r requirements.txt --break-system-packages
