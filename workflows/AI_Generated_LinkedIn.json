@@ -173,7 +173,7 @@
                       "typeVersion":  4.2,
                       "alwaysOutputData":  true,
                       "position":  [
-                                       768,
+                                       720,
                                        160
                                    ],
                       "parameters":  {
@@ -192,13 +192,16 @@
                       "typeVersion":  1.2,
                       "position":  [
                                        -1104,
-                                       640
+                                       624
                                    ],
                       "parameters":  {
                                          "rule":  {
                                                       "interval":  [
                                                                        {
-
+                                                                           "field":  "days",
+                                                                           "daysInterval":  1,
+                                                                           "triggerAtHour":  7,
+                                                                           "triggerAtMinute":  0
                                                                        }
                                                                    ]
                                                   }
@@ -210,12 +213,13 @@
                       "notesInFlow":  true,
                       "notes":  "Used ULTIMATE Chatgpt",
                       "type":  "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-                      "typeVersion":  1,
+                      "typeVersion":  1.1,
                       "position":  [
-                                       -560,
-                                       864
+                                       -584,
+                                       840
                                    ],
                       "parameters":  {
+                                         "modelName":  "models/gemini-3.1-flash-lite",
                                          "options":  {
 
                                                      }
@@ -234,7 +238,7 @@
                       "typeVersion":  4.5,
                       "position":  [
                                        -880,
-                                       640
+                                       624
                                    ],
                       "parameters":  {
                                          "documentId":  {
@@ -272,7 +276,7 @@
                       "typeVersion":  1.6,
                       "position":  [
                                        -656,
-                                       640
+                                       624
                                    ],
                       "parameters":  {
                                          "promptType":  "define",
@@ -296,8 +300,8 @@
                       "type":  "n8n-nodes-base.set",
                       "typeVersion":  3.4,
                       "position":  [
-                                       -288,
-                                       640
+                                       -304,
+                                       624
                                    ],
                       "parameters":  {
                                          "assignments":  {
@@ -334,8 +338,8 @@
                       "type":  "n8n-nodes-base.gmail",
                       "typeVersion":  2.1,
                       "position":  [
-                                       -64,
-                                       544
+                                       -80,
+                                       528
                                    ],
                       "parameters":  {
                                          "operation":  "sendAndWait",
@@ -380,8 +384,8 @@
                       "type":  "n8n-nodes-base.switch",
                       "typeVersion":  3.2,
                       "position":  [
-                                       160,
-                                       544
+                                       144,
+                                       512
                                    ],
                       "parameters":  {
                                          "rules":  {
@@ -473,8 +477,8 @@
                       "type":  "@n8n/n8n-nodes-langchain.chainLlm",
                       "typeVersion":  1.6,
                       "position":  [
-                                       384,
-                                       720
+                                       368,
+                                       688
                                    ],
                       "parameters":  {
                                          "promptType":  "define",
@@ -487,8 +491,8 @@
                       "type":  "n8n-nodes-base.if",
                       "typeVersion":  2.2,
                       "position":  [
-                                       464,
-                                       272
+                                       432,
+                                       256
                                    ],
                       "parameters":  {
                                          "conditions":  {
@@ -523,7 +527,7 @@
                       "type":  "n8n-nodes-base.linkedIn",
                       "typeVersion":  1,
                       "position":  [
-                                       992,
+                                       944,
                                        160
                                    ],
                       "parameters":  {
@@ -541,8 +545,8 @@
                       "type":  "n8n-nodes-base.linkedIn",
                       "typeVersion":  1,
                       "position":  [
-                                       992,
-                                       368
+                                       944,
+                                       352
                                    ],
                       "parameters":  {
                                          "postAs":  "organization",
@@ -559,8 +563,8 @@
                       "type":  "n8n-nodes-base.googleSheets",
                       "typeVersion":  4.5,
                       "position":  [
-                                       1200,
-                                       368
+                                       1168,
+                                       352
                                    ],
                       "parameters":  {
                                          "operation":  "update",
