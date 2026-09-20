@@ -266,7 +266,13 @@
                                          "options":  {
 
                                                      }
-                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "p4FOKSPmSxNgJXxh",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
                   },
                   {
                       "id":  "bf918546-dea0-475d-baef-a375a202ff16",
@@ -376,7 +382,13 @@
                                          "options":  {
 
                                                      }
-                                     }
+                                     },
+                      "credentials":  {
+                                          "gmailOAuth2":  {
+                                                              "id":  "ZmFgEBuHqC0OpM95",
+                                                              "name":  "Gmail account"
+                                                          }
+                                      }
                   },
                   {
                       "id":  "2e1c78a2-8cbe-410e-abb7-fb5d17abfb10",
@@ -531,13 +543,20 @@
                                        160
                                    ],
                       "parameters":  {
-                                         "person":  "pM247vR8Se",
-                                         "text":  "={{ $(\u0027Data Formatting 1\u0027).item.json[\u0027Post Content\u0027] }}",
+                                         "postAs":  "organization",
+                                         "organization":  "107520627",
                                          "shareMediaCategory":  "IMAGE",
+                                         "text":  "={{ $(\u0027Data Formatting 1\u0027).item.json[\u0027Post Content\u0027] }}",
                                          "additionalFields":  {
 
                                                               }
-                                     }
+                                     },
+                      "credentials":  {
+                                          "linkedInOAuth2Api":  {
+                                                                    "id":  "BfRlLbSaxxWIEXmk",
+                                                                    "name":  "LinkedIn account"
+                                                                }
+                                      }
                   },
                   {
                       "id":  "ef2a73e6-706b-48c2-bf08-53a36dddf1b6",
@@ -555,7 +574,13 @@
                                          "additionalFields":  {
 
                                                               }
-                                     }
+                                     },
+                      "credentials":  {
+                                          "linkedInOAuth2Api":  {
+                                                                    "id":  "BfRlLbSaxxWIEXmk",
+                                                                    "name":  "LinkedIn account"
+                                                                }
+                                      }
                   },
                   {
                       "id":  "ade5fe96-2bd7-4114-9e59-793938eee80b",
@@ -670,7 +695,13 @@
                                          "options":  {
 
                                                      }
-                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "p4FOKSPmSxNgJXxh",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
                   },
                   {
                       "id":  "21056b3b-a2ef-430d-a25d-a202c86d2e98",
