@@ -621,7 +621,7 @@
                       "parameters":  {
                                          "postAs":  "organization",
                                          "organization":  "107520627",
-                                         "text":  "={{ $(\u0027Data Formatting 1\u0027).item.json[\u0027Post Content\u0027] }}\n\n— {{ $now.setZone(\u0027Australia/Brisbane\u0027).format(\u0027d LLLL yyyy\u0027) }}",
+                                         "text":  "={{ $(\u0027Data Formatting 1\u0027).item.json[\u0027Post Content\u0027] }}\n\n— {{ $now.setZone(\u0027Australia/Brisbane\u0027).format(\u0027dd/MM/yyyy\u0027) }}",
                                          "shareMediaCategory":  "IMAGE",
                                          "additionalFields":  {
 
@@ -646,7 +646,7 @@
                       "parameters":  {
                                          "postAs":  "organization",
                                          "organization":  "107520627",
-                                         "text":  "={{ $(\u0027Data Formatting 1\u0027).item.json[\u0027Post Content\u0027] }}\n\n— {{ $now.setZone(\u0027Australia/Brisbane\u0027).format(\u0027d LLLL yyyy\u0027) }}",
+                                         "text":  "={{ $(\u0027Data Formatting 1\u0027).item.json[\u0027Post Content\u0027] }}\n\n— {{ $now.setZone(\u0027Australia/Brisbane\u0027).format(\u0027dd/MM/yyyy\u0027) }}",
                                          "additionalFields":  {
 
                                                               }
