@@ -365,7 +365,7 @@
                                          "messages":  {
                                                           "messageValues":  [
                                                                                 {
-                                                                                    "message":  "You are Saptarshi, a data engineer and Microsoft Fabric Solution Architect in Queensland, Australia, writing your own LinkedIn post. Australian English always.\n\nSTRUCTURE beats vocabulary for sounding human. Mix short sentences (3-8 words) with long ones (20+). Never uniform rhythm -- if three consecutive sentences are the same length, that\u0027s a tell.\n\nNEVER use: delve, tapestry, landscape, pivotal, intricate, meticulous, bolster, underscore, leverage (verb), utilize, facilitate, paramount, groundbreaking, cutting-edge, game-changer, transformative, seamless, robust (outside engineering), unprecedented, remarkable, profound, realm, holistic, actionable, learnings, thought leader, synergy, myriad, elevate, unleash, streamline, empower, resonate, poised to.\n\nNEVER open with: \"In today\u0027s...\", \"In an era where...\", \"It\u0027s worth noting...\", \"Let\u0027s dive in\", \"At its core\", \"Here\u0027s the thing\", \"Certainly,\"/\"Moreover,\"/\"Furthermore,\". Never use em-dashes (- or --) anywhere, including mid-sentence. Never \"It\u0027s not X, it\u0027s Y\" pivots. Never rule-of-three lists. Never vague attribution (\"experts believe\", \"studies show\") -- name the source or drop the claim.\n\nName the actor: \"I read the numbers and cut the feature\" not \"the data drove the decision\". State uncertainty plainly when real: \"I think\", \"probably\", \"my read\" -- that\u0027s honesty, not hedging, and it stays.\n\nBold: one phrase max. Bullets: only if genuinely list-like. One emoji max, end of line, only if it earns its place.\n\nLENGTH: approximately 2,400 characters (~400 words). This is a substantive, elaborated post -- use the room fully. Still no filler; every added sentence earns its place with a specific example or a real opinion.\n\nBEFORE YOU FINALIZE, do a required self-audit pass:\n1. Name anything that still reads as AI-generated.\n2. Check every specific fact, number, or example against the source data above -- if it wasn\u0027t in the source, cut it. Never invent details.\n3. Re-read once more for anything the fixes just introduced.\nThen output only the final post text -- no preamble, no notes."
+                                                                                    "message":  "TODAY\u0027S ACTUAL DATE is {{ $now.setZone(\u0027Australia/Brisbane\u0027).format(\u0027dd LLLL yyyy\u0027) }} ({{ $now.setZone(\u0027Australia/Brisbane\u0027).format(\u0027cccc\u0027) }}), Brisbane, Queensland, Australia. Use this as ground truth for any date, year, or \"this year\"/\"currently\"/\"recently\" reference in the post -- never default to a different year from your own training data. If discussing broader trends, anchor them to this actual current date, not an assumed one.\n\nYou are Saptarshi, a data engineer and Microsoft Fabric Solution Architect in Queensland, Australia, writing your own LinkedIn post. Australian English always.\n\nSTRUCTURE beats vocabulary for sounding human. Mix short sentences (3-8 words) with long ones (20+). Never uniform rhythm -- if three consecutive sentences are the same length, that\u0027s a tell.\n\nNEVER use: delve, tapestry, landscape, pivotal, intricate, meticulous, bolster, underscore, leverage (verb), utilize, facilitate, paramount, groundbreaking, cutting-edge, game-changer, transformative, seamless, robust (outside engineering), unprecedented, remarkable, profound, realm, holistic, actionable, learnings, thought leader, synergy, myriad, elevate, unleash, streamline, empower, resonate, poised to.\n\nNEVER open with: \"In today\u0027s...\", \"In an era where...\", \"It\u0027s worth noting...\", \"Let\u0027s dive in\", \"At its core\", \"Here\u0027s the thing\", \"Certainly,\"/\"Moreover,\"/\"Furthermore,\". Never use em-dashes (- or --) anywhere, including mid-sentence. Never \"It\u0027s not X, it\u0027s Y\" pivots. Never rule-of-three lists. Never vague attribution (\"experts believe\", \"studies show\") -- name the source or drop the claim.\n\nName the actor: \"I read the numbers and cut the feature\" not \"the data drove the decision\". State uncertainty plainly when real: \"I think\", \"probably\", \"my read\" -- that\u0027s honesty, not hedging, and it stays.\n\nBold: one phrase max. Bullets: only if genuinely list-like. One emoji max, end of line, only if it earns its place.\n\nLENGTH: approximately 2,400 characters (~400 words). This is a substantive, elaborated post -- use the room fully. Still no filler; every added sentence earns its place with a specific example or a real opinion.\n\nBEFORE YOU FINALIZE, do a required self-audit pass:\n1. Name anything that still reads as AI-generated.\n2. Check every specific fact, number, or example against the source data above -- if it wasn\u0027t in the source, cut it. Never invent details.\n3. Re-read once more for anything the fixes just introduced.\nThen output only the final post text -- no preamble, no notes."
                                                                                 },
                                                                                 {
                                                                                     "type":  "HumanMessagePromptTemplate",
@@ -853,11 +853,10 @@
                       "type":  "n8n-nodes-base.googleSheets",
                       "typeVersion":  4.5,
                       "position":  [
-                                       220,
-                                       600
+                                       224,
+                                       608
                                    ],
                       "parameters":  {
-                                         "operation":  "read",
                                          "documentId":  {
                                                             "__rl":  true,
                                                             "value":  "1B3PlTi0ZIK15evn4SWy8wN8ycoKRIbPTzKDdo8pLljo",
@@ -870,7 +869,7 @@
                                                            "mode":  "id"
                                                        },
                                          "options":  {
-                                                         "range":  "A1:D25"
+
                                                      }
                                      },
                       "credentials":  {
@@ -886,11 +885,10 @@
                       "type":  "n8n-nodes-base.googleSheets",
                       "typeVersion":  4.5,
                       "position":  [
-                                       440,
-                                       600
+                                       448,
+                                       608
                                    ],
                       "parameters":  {
-                                         "operation":  "read",
                                          "documentId":  {
                                                             "__rl":  true,
                                                             "value":  "1B3PlTi0ZIK15evn4SWy8wN8ycoKRIbPTzKDdo8pLljo",
@@ -899,11 +897,11 @@
                                                         },
                                          "sheetName":  {
                                                            "__rl":  true,
-                                                           "value":  "2033869195",
+                                                           "value":  "576116611",
                                                            "mode":  "id"
                                                        },
                                          "options":  {
-                                                         "range":  "A27:B28"
+
                                                      }
                                      },
                       "credentials":  {
@@ -919,8 +917,8 @@
                       "type":  "n8n-nodes-base.code",
                       "typeVersion":  2,
                       "position":  [
-                                       660,
-                                       600
+                                       672,
+                                       608
                                    ],
                       "parameters":  {
                                          "jsCode":  "\nconst rows = $(\u0027Read Config\u0027).all().map(i =\u003e i.json);\nconst counterRow = $(\u0027Read Counter\u0027).all().map(i =\u003e i.json)[0];\nconst counter = parseInt(counterRow.NextPostNumber, 10) || 1;\nconst idx = (counter - 1) % rows.length;\nconst row = rows[idx];\nconst isRss = row[\u0027Feed URL\u0027] \u0026\u0026 row[\u0027Feed URL\u0027].includes(\u0027/feed\u0027) || row[\u0027Feed URL\u0027].includes(\u0027.xml\u0027) || row[\u0027Feed URL\u0027].includes(\u0027/news/\u0027) || row[\u0027Feed URL\u0027].includes(\u0027atom\u0027);\nreturn [{ json: {\n  subject: row.Subject,\n  publication: row.Publication,\n  feedUrl: row[\u0027Feed URL\u0027],\n  hasFeed: !!isRss,\n  counter: counter,\n  totalRows: rows.length,\n  label: row.Subject.replace(/[^a-zA-Z0-9]+/g,\u0027\u0027) + \u0027_T\u0027 + counter\n}}];\n"
@@ -933,7 +931,7 @@
                       "typeVersion":  4.2,
                       "position":  [
                                        880,
-                                       600
+                                       608
                                    ],
                       "parameters":  {
                                          "url":  "={{ $json.hasFeed ? $json.feedUrl : \u0027\u0027 }}",
@@ -943,8 +941,7 @@
                                                                                            "responseFormat":  "text"
                                                                                        }
                                                                       }
-                                                     },
-                                         "onError":  "continueRegularOutput"
+                                                     }
                                      }
                   },
                   {
@@ -953,8 +950,8 @@
                       "type":  "n8n-nodes-base.code",
                       "typeVersion":  2,
                       "position":  [
-                                       1100,
-                                       600
+                                       1104,
+                                       608
                                    ],
                       "parameters":  {
                                          "jsCode":  "\nconst picked = $(\u0027Pick Subject\u0027).first().json;\nlet items = [];\ntry {\n  const xml = $json.data || \u0027\u0027;\n  const itemBlocks = xml.match(/\u003citem[\\s\\S]*?\u003c\\/item\u003e/g) || xml.match(/\u003centry[\\s\\S]*?\u003c\\/entry\u003e/g) || [];\n  const now = new Date();\n  const cutoff = new Date(now.getTime() - 30*24*60*60*1000);\n  for (const block of itemBlocks) {\n    const titleM = block.match(/\u003ctitle[^\u003e]*\u003e([\\s\\S]*?)\u003c\\/title\u003e/);\n    const dateM = block.match(/\u003cpubDate\u003e([\\s\\S]*?)\u003c\\/pubDate\u003e/) || block.match(/\u003cpublished\u003e([\\s\\S]*?)\u003c\\/published\u003e/) || block.match(/\u003cupdated\u003e([\\s\\S]*?)\u003c\\/updated\u003e/);\n    const linkM = block.match(/\u003clink[^\u003e]*\u003e([\\s\\S]*?)\u003c\\/link\u003e/) || block.match(/\u003clink[^\u003e]*href=\"([^\"]*)\"/);\n    if (!titleM || !dateM) continue;\n    const d = new Date(dateM[1].trim());\n    if (isNaN(d)) continue;\n    if (d \u003c cutoff) continue;\n    let title = titleM[1].replace(/\u003c!\\[CDATA\\[|\\]\\]\u003e/g,\u0027\u0027).trim();\n    items.push({ title, date: d, link: linkM ? linkM[1].trim() : \u0027\u0027 });\n  }\n  items.sort((a,b) =\u003e b.date - a.date);\n} catch (e) {}\n\nlet postDescription;\nif (items.length \u003e 0) {\n  const top = items[0];\n  postDescription = `Write about this recent development in ${picked.subject}: \"${top.title}\" (source: ${picked.publication}, published ${top.date.toDateString()}). Paraphrase in your own words -- never quote directly. Ground the post in this real, current story; add your own practical take as a data engineer / Fabric architect.`;\n} else {\n  postDescription = `Write a grounded, practical LinkedIn post about ${picked.subject}, drawing on current real developments in this space (from ${picked.publication}). No fetched article was available within the last 30 days, so speak from general current knowledge of the field -- stay factual, no invented specifics.`;\n}\n\nreturn [{ json: {\n  \u0027Post Description\u0027: postDescription,\n  \u0027Instructions\u0027: \u0027Keep it grounded and practical, not hype. Speak from my own experience as a data engineer/Fabric architect.\u0027,\n  \u0027Status\u0027: \u0027Pending\u0027,\n  \u0027Label\u0027: picked.label,\n  counter: picked.counter,\n  totalRows: picked.totalRows\n}}];\n"
@@ -966,8 +963,8 @@
                       "type":  "n8n-nodes-base.googleSheets",
                       "typeVersion":  4.5,
                       "position":  [
-                                       1320,
-                                       600
+                                       1328,
+                                       608
                                    ],
                       "parameters":  {
                                          "operation":  "append",
@@ -989,7 +986,65 @@
                                                                        "Instructions":  "={{ $json[\u0027Instructions\u0027] }}",
                                                                        "Status":  "={{ $json[\u0027Status\u0027] }}",
                                                                        "Label":  "={{ $json[\u0027Label\u0027] }}"
-                                                                   }
+                                                                   },
+                                                         "schema":  [
+                                                                        {
+                                                                            "id":  "Post Description",
+                                                                            "displayName":  "Post Description",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "removed":  false
+                                                                        },
+                                                                        {
+                                                                            "id":  "Instructions",
+                                                                            "displayName":  "Instructions",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "removed":  false
+                                                                        },
+                                                                        {
+                                                                            "id":  "Status",
+                                                                            "displayName":  "Status",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "removed":  false
+                                                                        },
+                                                                        {
+                                                                            "id":  "Confirm  Content?",
+                                                                            "displayName":  "Confirm  Content?",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "removed":  false
+                                                                        },
+                                                                        {
+                                                                            "id":  "Label",
+                                                                            "displayName":  "Label",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "removed":  false
+                                                                        }
+                                                                    ],
+                                                         "matchingColumns":  [
+
+                                                                             ]
+                                                     },
+                                         "options":  {
+
                                                      }
                                      },
                       "credentials":  {
@@ -1005,8 +1060,8 @@
                       "type":  "n8n-nodes-base.googleSheets",
                       "typeVersion":  4.5,
                       "position":  [
-                                       1540,
-                                       600
+                                       1552,
+                                       608
                                    ],
                       "parameters":  {
                                          "operation":  "update",
@@ -1018,7 +1073,7 @@
                                                         },
                                          "sheetName":  {
                                                            "__rl":  true,
-                                                           "value":  "2033869195",
+                                                           "value":  "576116611",
                                                            "mode":  "id"
                                                        },
                                          "columns":  {
@@ -1029,10 +1084,32 @@
                                                          "value":  {
                                                                        "CounterName":  "NextPostNumber",
                                                                        "CounterValue":  "={{ ($json.counter % $json.totalRows) + 1 }}"
-                                                                   }
+                                                                   },
+                                                         "schema":  [
+                                                                        {
+                                                                            "id":  "CounterName",
+                                                                            "displayName":  "CounterName",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "removed":  false
+                                                                        },
+                                                                        {
+                                                                            "id":  "CounterValue",
+                                                                            "displayName":  "CounterValue",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "removed":  false
+                                                                        }
+                                                                    ]
                                                      },
                                          "options":  {
-                                                         "range":  "A27:B28"
+
                                                      }
                                      },
                       "credentials":  {
