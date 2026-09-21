@@ -31,7 +31,7 @@
                                                  "main":  [
                                                               [
                                                                   {
-                                                                      "node":  "Get Data from Sheets",
+                                                                      "node":  "Read Config",
                                                                       "type":  "main",
                                                                       "index":  0
                                                                   }
@@ -162,7 +162,84 @@
                                                                             }
                                                                         ]
                                                                     ]
-                                                       }
+                                                       },
+                        "Read Config":  {
+                                            "main":  [
+                                                         [
+                                                             {
+                                                                 "node":  "Read Counter",
+                                                                 "type":  "main",
+                                                                 "index":  0
+                                                             }
+                                                         ]
+                                                     ]
+                                        },
+                        "Read Counter":  {
+                                             "main":  [
+                                                          [
+                                                              {
+                                                                  "node":  "Pick Subject",
+                                                                  "type":  "main",
+                                                                  "index":  0
+                                                              }
+                                                          ]
+                                                      ]
+                                         },
+                        "Pick Subject":  {
+                                             "main":  [
+                                                          [
+                                                              {
+                                                                  "node":  "Fetch Feed",
+                                                                  "type":  "main",
+                                                                  "index":  0
+                                                              }
+                                                          ]
+                                                      ]
+                                         },
+                        "Fetch Feed":  {
+                                           "main":  [
+                                                        [
+                                                            {
+                                                                "node":  "Build Post",
+                                                                "type":  "main",
+                                                                "index":  0
+                                                            }
+                                                        ]
+                                                    ]
+                                       },
+                        "Build Post":  {
+                                           "main":  [
+                                                        [
+                                                            {
+                                                                "node":  "Add Row",
+                                                                "type":  "main",
+                                                                "index":  0
+                                                            }
+                                                        ]
+                                                    ]
+                                       },
+                        "Add Row":  {
+                                        "main":  [
+                                                     [
+                                                         {
+                                                             "node":  "Update Counter",
+                                                             "type":  "main",
+                                                             "index":  0
+                                                         }
+                                                     ]
+                                                 ]
+                                    },
+                        "Update Counter":  {
+                                               "main":  [
+                                                            [
+                                                                {
+                                                                    "node":  "Get Data from Sheets",
+                                                                    "type":  "main",
+                                                                    "index":  0
+                                                                }
+                                                            ]
+                                                        ]
+                                           }
                     },
     "active":  false,
     "nodes":  [
@@ -769,6 +846,201 @@
                                          "width":  460,
                                          "color":  3
                                      }
+                  },
+                  {
+                      "id":  "readConfig",
+                      "name":  "Read Config",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.5,
+                      "position":  [
+                                       220,
+                                       600
+                                   ],
+                      "parameters":  {
+                                         "operation":  "read",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1B3PlTi0ZIK15evn4SWy8wN8ycoKRIbPTzKDdo8pLljo",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Linkedin Post Automation"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  "2033869195",
+                                                           "mode":  "id"
+                                                       },
+                                         "options":  {
+                                                         "range":  "A1:D25"
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "p4FOKSPmSxNgJXxh",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "id":  "readCounter",
+                      "name":  "Read Counter",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.5,
+                      "position":  [
+                                       440,
+                                       600
+                                   ],
+                      "parameters":  {
+                                         "operation":  "read",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1B3PlTi0ZIK15evn4SWy8wN8ycoKRIbPTzKDdo8pLljo",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Linkedin Post Automation"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  "2033869195",
+                                                           "mode":  "id"
+                                                       },
+                                         "options":  {
+                                                         "range":  "A27:B28"
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "p4FOKSPmSxNgJXxh",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "id":  "pickSubject",
+                      "name":  "Pick Subject",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       660,
+                                       600
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "\nconst rows = $(\u0027Read Config\u0027).all().map(i =\u003e i.json);\nconst counterRow = $(\u0027Read Counter\u0027).all().map(i =\u003e i.json)[0];\nconst counter = parseInt(counterRow.NextPostNumber, 10) || 1;\nconst idx = (counter - 1) % rows.length;\nconst row = rows[idx];\nconst isRss = row[\u0027Feed URL\u0027] \u0026\u0026 row[\u0027Feed URL\u0027].includes(\u0027/feed\u0027) || row[\u0027Feed URL\u0027].includes(\u0027.xml\u0027) || row[\u0027Feed URL\u0027].includes(\u0027/news/\u0027) || row[\u0027Feed URL\u0027].includes(\u0027atom\u0027);\nreturn [{ json: {\n  subject: row.Subject,\n  publication: row.Publication,\n  feedUrl: row[\u0027Feed URL\u0027],\n  hasFeed: !!isRss,\n  counter: counter,\n  totalRows: rows.length,\n  label: row.Subject.replace(/[^a-zA-Z0-9]+/g,\u0027\u0027) + \u0027_T\u0027 + counter\n}}];\n"
+                                     }
+                  },
+                  {
+                      "id":  "fetchFeed",
+                      "name":  "Fetch Feed",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       880,
+                                       600
+                                   ],
+                      "parameters":  {
+                                         "url":  "={{ $json.hasFeed ? $json.feedUrl : \u0027\u0027 }}",
+                                         "options":  {
+                                                         "response":  {
+                                                                          "response":  {
+                                                                                           "responseFormat":  "text"
+                                                                                       }
+                                                                      }
+                                                     },
+                                         "onError":  "continueRegularOutput"
+                                     }
+                  },
+                  {
+                      "id":  "buildPost",
+                      "name":  "Build Post",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1100,
+                                       600
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "\nconst picked = $(\u0027Pick Subject\u0027).first().json;\nlet items = [];\ntry {\n  const xml = $json.data || \u0027\u0027;\n  const itemBlocks = xml.match(/\u003citem[\\s\\S]*?\u003c\\/item\u003e/g) || xml.match(/\u003centry[\\s\\S]*?\u003c\\/entry\u003e/g) || [];\n  const now = new Date();\n  const cutoff = new Date(now.getTime() - 30*24*60*60*1000);\n  for (const block of itemBlocks) {\n    const titleM = block.match(/\u003ctitle[^\u003e]*\u003e([\\s\\S]*?)\u003c\\/title\u003e/);\n    const dateM = block.match(/\u003cpubDate\u003e([\\s\\S]*?)\u003c\\/pubDate\u003e/) || block.match(/\u003cpublished\u003e([\\s\\S]*?)\u003c\\/published\u003e/) || block.match(/\u003cupdated\u003e([\\s\\S]*?)\u003c\\/updated\u003e/);\n    const linkM = block.match(/\u003clink[^\u003e]*\u003e([\\s\\S]*?)\u003c\\/link\u003e/) || block.match(/\u003clink[^\u003e]*href=\"([^\"]*)\"/);\n    if (!titleM || !dateM) continue;\n    const d = new Date(dateM[1].trim());\n    if (isNaN(d)) continue;\n    if (d \u003c cutoff) continue;\n    let title = titleM[1].replace(/\u003c!\\[CDATA\\[|\\]\\]\u003e/g,\u0027\u0027).trim();\n    items.push({ title, date: d, link: linkM ? linkM[1].trim() : \u0027\u0027 });\n  }\n  items.sort((a,b) =\u003e b.date - a.date);\n} catch (e) {}\n\nlet postDescription;\nif (items.length \u003e 0) {\n  const top = items[0];\n  postDescription = `Write about this recent development in ${picked.subject}: \"${top.title}\" (source: ${picked.publication}, published ${top.date.toDateString()}). Paraphrase in your own words -- never quote directly. Ground the post in this real, current story; add your own practical take as a data engineer / Fabric architect.`;\n} else {\n  postDescription = `Write a grounded, practical LinkedIn post about ${picked.subject}, drawing on current real developments in this space (from ${picked.publication}). No fetched article was available within the last 30 days, so speak from general current knowledge of the field -- stay factual, no invented specifics.`;\n}\n\nreturn [{ json: {\n  \u0027Post Description\u0027: postDescription,\n  \u0027Instructions\u0027: \u0027Keep it grounded and practical, not hype. Speak from my own experience as a data engineer/Fabric architect.\u0027,\n  \u0027Status\u0027: \u0027Pending\u0027,\n  \u0027Label\u0027: picked.label,\n  counter: picked.counter,\n  totalRows: picked.totalRows\n}}];\n"
+                                     }
+                  },
+                  {
+                      "id":  "addRow",
+                      "name":  "Add Row",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.5,
+                      "position":  [
+                                       1320,
+                                       600
+                                   ],
+                      "parameters":  {
+                                         "operation":  "append",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1B3PlTi0ZIK15evn4SWy8wN8ycoKRIbPTzKDdo8pLljo",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Linkedin Post Automation"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  "0",
+                                                           "mode":  "id"
+                                                       },
+                                         "columns":  {
+                                                         "mappingMode":  "defineBelow",
+                                                         "value":  {
+                                                                       "Post Description":  "={{ $json[\u0027Post Description\u0027] }}",
+                                                                       "Instructions":  "={{ $json[\u0027Instructions\u0027] }}",
+                                                                       "Status":  "={{ $json[\u0027Status\u0027] }}",
+                                                                       "Label":  "={{ $json[\u0027Label\u0027] }}"
+                                                                   }
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "p4FOKSPmSxNgJXxh",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "id":  "updateCounter",
+                      "name":  "Update Counter",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.5,
+                      "position":  [
+                                       1540,
+                                       600
+                                   ],
+                      "parameters":  {
+                                         "operation":  "update",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1B3PlTi0ZIK15evn4SWy8wN8ycoKRIbPTzKDdo8pLljo",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Linkedin Post Automation"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  "2033869195",
+                                                           "mode":  "id"
+                                                       },
+                                         "columns":  {
+                                                         "mappingMode":  "defineBelow",
+                                                         "matchingColumns":  [
+                                                                                 "CounterName"
+                                                                             ],
+                                                         "value":  {
+                                                                       "CounterName":  "NextPostNumber",
+                                                                       "CounterValue":  "={{ ($json.counter % $json.totalRows) + 1 }}"
+                                                                   }
+                                                     },
+                                         "options":  {
+                                                         "range":  "A27:B28"
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "p4FOKSPmSxNgJXxh",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
                   }
               ]
 }
