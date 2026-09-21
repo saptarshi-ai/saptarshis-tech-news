@@ -339,7 +339,7 @@
                                                                       ]
                                                        },
                                          "options":  {
-
+                                                         "returnFirstMatch":  true
                                                      }
                                      },
                       "credentials":  {
@@ -385,6 +385,29 @@
                                        624
                                    ],
                       "parameters":  {
+                                         "mode":  "manual",
+                                         "assignments":  {
+                                                             "assignments":  [
+                                                                                 {
+                                                                                     "id":  "cdb2ba3f-74c3-4906-86a5-2475423a6c02",
+                                                                                     "name":  "Post Content",
+                                                                                     "value":  "={{ $json.text }}",
+                                                                                     "type":  "string"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "52057fcb-b937-486c-923b-004eed735c48",
+                                                                                     "name":  "Post Description",
+                                                                                     "value":  "={{ $(\u0027Get Data from Sheets\u0027).item.json[\u0027Post Description\u0027] }}",
+                                                                                     "type":  "string"
+                                                                                 },
+                                                                                 {
+                                                                                     "id":  "53399408-15a5-4ede-b19a-fb07c49a0f6b",
+                                                                                     "name":  "Instructions",
+                                                                                     "value":  "={{ $(\u0027Get Data from Sheets\u0027).item.json.Instructions }}",
+                                                                                     "type":  "string"
+                                                                                 }
+                                                                             ]
+                                                         },
                                          "options":  {
 
                                                      }
