@@ -276,7 +276,7 @@
                                                       "interval":  [
                                                                        {
                                                                            "triggerAtHour":  4,
-                                                                           "triggerAtMinute":  30
+                                                                           "triggerAtMinute":  15
                                                                        }
                                                                    ]
                                                   }
