@@ -6,42 +6,40 @@
 
 ## Last session
 
-**Date:** 2026-09-21
-**What was done (major session -- full pipeline built and debugged end-to-end):**
+**Date:** 2026-09-24
+**What was done (major redesign -- rotation model replaced entirely):**
 
-- **Credentials:** Google Sheets, Gmail, LinkedIn OAuth all connected and wired into the workflow's 5 credential-requiring nodes.
-- **Original Google Sheet was permanently deleted (real finding).** Recreated at `1B3PlTi0ZIK15evn4SWy8wN8ycoKRIbPTzKDdo8pLljo` with tabs: `LinkedinData` (queue), `Config` (25 subject/publication/feed rows, user-editable), `Counter` (rotation counter, separate tab to avoid header-row collision with Config).
-- **Built real subject rotation + article-fetch feature:** Read Config -> Read Counter -> Pick Subject -> Fetch Feed (real RSS, 30-day freshness filter) -> Build Post -> Add Row -> Update Counter, feeding into the existing tested approval pipeline unchanged.
-- **`content-writing-style` skill built** from a real review of chi-feng/humanizer + blader/humanizer -- self-audit pass, fix-by-subtraction, frequency-on-two-axes. Linked from `content-writer` agent and root CLAUDE.md.
-- **Real bugs found and fixed (in order found):**
-  1. `Add Row` / `Update Counter` missing `columns.schema` (n8n resourceMapper requirement when built via API, not UI).
-  2. `Get Data from Sheets` had no row limit -> batched leftover + newly-added rows together, causing `Generate Post Content` to run twice per execution.
-  3. **Root cause of empty approval emails:** `Data Formatting 1`'s field mappings (Post Content / Post Description / Instructions) had been silently wiped during an earlier full-workflow API overwrite. Restored.
-  4. `Get Data from Sheets` fixed with `returnFirstMatch: true` (prevents the duplicate-row batching regardless of leftover rows).
-  5. **Real live-post bug:** `Post Without Image` was posting the AI *instructions* (`Post Description`) instead of the AI-*generated* text (`Post Content`) -- this is what produced the garbage post that had to be manually deleted from the real company page. Fixed to reference `Data Formatting 1`'s `Post Content`, matching `Post With Image` (which was already correct).
-  6. Model was defaulting to a stale internal "current year" (wrote "2025") separate from the real fetched-article date. Fixed with an explicit `$now` (Brisbane) date/location anchor injected into the prompt.
-- **Content quality fixes:** length target raised to ~2,400 chars, structured writing style added (short paragraphs, arrow/dash breakdowns, one-line takeaway -- modelled on a real example post the user liked), date moved to a clean footer (`dd/MM/yyyy`, e.g. `21/09/2026`), GitHub Blog (`github.blog/feed/`) added as a 25th Config source.
-- **Repo renamed public:** `AI-Generated-LinkedIn` -> `saptarshis-tech-news`, made public (verified safe first -- only `.env.example` was ever tracked, real secrets never left `.env`).
-- **A real, clean post was successfully published** to Saptarshi's Tech Hub and verified live (`urn:li:share:7507717139245826048`, 21/09/2026, correct content, correct date format).
-- Full safety-critical debugging discipline used throughout: backed up the working workflow (both as a local file and a separate n8n workflow copy) before any risky fix, deleted only after every fix was confirmed working.
+- **Diagnosed why two posts came out on the same subject:** the old counter-based rotation had a real race condition (from repeated manual test/delete cycles during earlier debugging) that kept resetting to index 0 (Microsoft Fabric). Root cause traced directly from the live Sheet data, not guessed.
+- **Full redesign, agreed with user, then built and tested end-to-end:**
+  - New `DaySchedule` tab (Day -> Subject, user-editable): Sun=Power BI, Mon=AI, Tue=Microsoft Fabric, Wed=GitHub, Thu=Data Engineering, Fri=Machine Learning, Sat=System Design.
+  - `Counter` tab replaced entirely with a `History` tab (Date, Day, Subject, Label, Status) -- a real audit log instead of a single fragile number. Removes the whole class of race-condition bug, since day-of-week lookup needs no incrementing state at all.
+  - New Wednesday/GitHub branch: calls the real GitHub Search API directly (`api.github.com/search/repositories`, sorted by stars, filtered to recently pushed) -- no MCP connector needed, since n8n's unattended 4:15am run can't use MCP tools (those are for Claude's own conversational use only). Grounds the post in a real repo (name, stars, description, URL).
+  - Fixed two real pre-existing bugs found while investigating: `Add Row`/`Update Google Sheet` never wrote to `Confirm  Content?` at all (now writes the user's actual Yes/No/feedback decision back); `Post Link` was a broken static string literal, not a real link (now builds a real URL from the post's LinkedIn URN).
+- **Nodes added:** Read Day Schedule, Get Today Subject, Match Config Row, Is GitHub Day? (IF), Fetch GitHub Top Repo, Build GitHub Post, Log History. **Nodes removed:** Read Counter, Pick Subject, Update Counter.
+- **Real bugs hit and fixed during testing (both caught by actually running it, not assumed):**
+  1. `Is GitHub Day?` IF node: malformed boolean-operator schema (`Wrong type: '' is a string but was expecting a boolean`) -- switched to a string-equals comparison matching the proven pattern used elsewhere in this workflow.
+  2. Same node, second pass: strict type validation rejected a real JS boolean against a string `"true"` -- switched `typeValidation` to `loose`.
+- **Verified live, end-to-end:** a full run correctly identified today as Thursday, correctly routed to the RSS branch (not GitHub), picked Data Engineering per the new DaySchedule mapping, generated real grounded content (James Serra blog, dash-structured, no repeats), and logged a correct row to History (`2026-09-24 | Thursday | Data Engineering | Queued`). Sitting in Gmail for approval, unchanged from before.
+- Browser tooling was flaky for a stretch this session (third-party cookies blocking the extension); resolved once the user allowed them.
 
 **Decisions made:**
-- See DECISIONS.md (this session added several -- read it before touching the workflow again).
+- See DECISIONS.md -- several new entries this session, all under 2026-09-24.
 
 **What broke / surprises:**
-- All 6 real bugs listed above. The biggest lesson: full-workflow JSON overwrites via the API are dangerous -- a `Data Formatting 1` node's fields got silently wiped this way and wasn't caught until a live post went out with the wrong text. Prefer targeted patches over full re-serialization where possible; always verify field-by-field after any full overwrite before trusting a run.
+- The counter-based rotation's race condition (root cause of the "same subject twice" complaint) -- fully explained and resolved by removing the counter model entirely, not by patching it.
+- IF node schema for boolean conditions is easy to get wrong via the API (no UI validation to catch it) -- string-comparison + loose type validation is the safer pattern for future IF nodes built this way.
 
 ---
 
 ## Next session -- start here
 
-1. **TODO (explicitly deferred by user this session): run a live end-to-end test of the "No + feedback" regeneration path.** The wiring was verified correct via API (`Content Confirmation Logic` -> `Regenerate Post Content` -> `Data Formatting 1` -> back to `Send Content Confirmation`), and the `Data Formatting 1` fix should have fixed this path too since it's shared with the first-pass path -- but this has **not** been confirmed with a real click-through. Trigger a run, wait for the approval email, reply "No" with feedback, and confirm a *second* email arrives with genuinely regenerated content.
-2. Continue monitoring daily 4:30am scheduled runs once the above is confirmed -- currently still requires manual "Execute workflow" trigger, not yet relying on the schedule alone for a full unattended day.
-3. Consider verifying/expanding RSS feed coverage for the Config subjects still marked "reasonably confident" rather than directly confirmed (Data Science, Machine Learning, AI, PySpark alias, Data Engineering) -- see Config tab Notes column.
-4. Microsoft Purview still has no working RSS feed (confirmed broken even on Microsoft's own side) -- falls back to description-only generation for that one subject.
+1. **Still open from last session:** live end-to-end test of the "No + feedback" regeneration path specifically (wiring confirmed correct, never actually clicked through). Low priority now given how much else has been verified working, but still genuinely untested.
+2. **Wednesday/GitHub branch has not yet been triggered live** (today was Thursday) -- worth a manual test run once the day rolls around, or a one-off manual trigger, to confirm the GitHub Search API call and Build GitHub Post logic work as designed.
+3. Same open items as before: verify/expand "reasonably confident" (not individually confirmed) RSS feeds in Config for Data Science, Machine Learning, AI, PySpark; Microsoft Purview still has no working feed (falls back to description-only generation).
+4. Confirm Content?/Post Link fixes haven't been observed on a real approved post yet (today's run is still pending approval as of session end) -- worth checking the Sheet after approval to confirm both write correctly in practice, not just in theory.
 
 **Blockers:**
-- None currently. Workflow is in a known-good, tested state as of end of this session.
+- None. Workflow is active, tested, and in a known-good state.
 
 ---
 
@@ -49,7 +47,8 @@
 
 | Question | Owner | Status |
 |----------|-------|--------|
-| Does the "No" regeneration path actually resend a working email end-to-end? | User to test next session (or ask Claude to trigger) | Open -- see Next session #1 |
+| Does "No" + feedback regeneration actually resend a working email end-to-end? | User/Claude to test | Still open |
+| Does the GitHub/Wednesday branch actually work when it fires for real? | Untested live | Open -- built and reviewed, not yet run |
 
 ---
 

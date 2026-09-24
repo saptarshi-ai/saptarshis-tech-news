@@ -8,7 +8,9 @@
 
 | # | Task | Notes | Target | Done |
 |---|------|-------|--------|------|
-| 2 | [ ] Live end-to-end test of "No + feedback" regeneration path | Wiring verified correct via API, but never actually clicked through live. Trigger a run, reply No with feedback, confirm a second working approval email arrives. | Next session | |
+| 2 | [ ] Live end-to-end test of "No + feedback" regeneration path | Wiring verified correct, never actually clicked through live | Next session | |
+| 5 | [ ] Live test of the GitHub/Wednesday branch | Built and code-reviewed, not yet actually triggered (last test session was a Thursday) | Next Wednesday, or manual trigger | |
+| 6 | [ ] Confirm Confirm Content?/Post Link fixes work on a real approved post | Fixed in code, not yet observed on an actually-approved row | Once today's pending post is approved | |
 
 ## Pending
 

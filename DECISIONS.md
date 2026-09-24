@@ -48,4 +48,27 @@
 **Decision:** Every generated post ends with `\n\n- {{ date }}` in `dd/MM/yyyy` format, e.g. `21/09/2026`.
 **Why:** User's explicit preference -- wanted the date kept (liked seeing it) but moved out of the body and into a clean footer, in Australian date order.
 
+### 2026-09-24 - ARCH - Counter-based rotation replaced entirely with day-of-week scheduling
+
+**Decision:** Remove the incrementing-counter rotation model completely. Replace with a `DaySchedule` tab (Day -> Subject, user-editable) that the workflow looks up fresh every run based on the actual current weekday.
+**Why:** The counter model had a real, confirmed race condition -- traced directly from live Sheet data showing 6 consecutive runs all reading counter=1, caused by overlapping manual test/delete cycles during earlier debugging. Day-of-week lookup needs no persisted incrementing state at all, so this entire bug class becomes structurally impossible, not just patched.
+**Alternatives rejected:** Adding locking/transactional writes to the counter -- more complex, still fragile, doesn't match how the user actually wants to plan content (by day, not by sequential rotation).
+**Supersedes:** 2026-09-21 decision "`Get Data from Sheets` uses returnFirstMatch" (still true and still in place, but no longer the primary defense against repeats -- day-of-week lookup is).
+
+### 2026-09-24 - DATA - Counter tab replaced with a History log tab
+
+**Decision:** `Counter` tab (single NextPostNumber value) removed. `History` tab added: Date, Day, Subject, Label, Status -- one row appended per run.
+**Why:** User wanted visibility into what subject ran on what date, not just a hidden counter. Also serves as a natural audit trail for debugging future "why did X happen" questions without needing to reconstruct history from execution logs.
+
+### 2026-09-24 - ARCH - GitHub/Wednesday content sourced via direct API call, not MCP
+
+**Decision:** Wednesday's GitHub-repo post is built by an HTTP Request node calling `api.github.com/search/repositories` directly (unauthenticated, well within free rate limits for one daily call) -- not via an MCP GitHub connector.
+**Why:** MCP connectors are tools Claude uses in conversation; n8n's unattended 4:15am scheduled run has no Claude involvement and cannot invoke MCP tools. The workflow needs its own direct way to reach GitHub's API regardless of what's connected in chat.
+**Alternatives rejected:** MCP GitHub connector (asked about by user, explained why it doesn't apply to this use case).
+
+### 2026-09-24 - TECH - Confirm Content? and Post Link write-back bugs fixed
+
+**Decision:** `Update Google Sheet` now writes the real approval decision (`$('Send Content Confirmation').item.json.data['Confirm  Content?']`) and a real constructed post URL (`https://www.linkedin.com/feed/update/{urn}`), replacing two long-standing no-ops (one column never written at all; the other a broken static string).
+**Why:** Found while investigating the "same subject twice" complaint -- neither bug was the direct cause, but both were real, silent defects worth fixing while already deep in this part of the workflow.
+
 <!-- Add new entries above this line -->
