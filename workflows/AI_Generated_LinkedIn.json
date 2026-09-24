@@ -31,7 +31,7 @@
                                                  "main":  [
                                                               [
                                                                   {
-                                                                      "node":  "Read Config",
+                                                                      "node":  "Read Day Schedule",
                                                                       "type":  "main",
                                                                       "index":  0
                                                                   }
@@ -167,35 +167,13 @@
                                             "main":  [
                                                          [
                                                              {
-                                                                 "node":  "Read Counter",
+                                                                 "node":  "Match Config Row",
                                                                  "type":  "main",
                                                                  "index":  0
                                                              }
                                                          ]
                                                      ]
                                         },
-                        "Read Counter":  {
-                                             "main":  [
-                                                          [
-                                                              {
-                                                                  "node":  "Pick Subject",
-                                                                  "type":  "main",
-                                                                  "index":  0
-                                                              }
-                                                          ]
-                                                      ]
-                                         },
-                        "Pick Subject":  {
-                                             "main":  [
-                                                          [
-                                                              {
-                                                                  "node":  "Fetch Feed",
-                                                                  "type":  "main",
-                                                                  "index":  0
-                                                              }
-                                                          ]
-                                                      ]
-                                         },
                         "Fetch Feed":  {
                                            "main":  [
                                                         [
@@ -222,26 +200,99 @@
                                         "main":  [
                                                      [
                                                          {
-                                                             "node":  "Update Counter",
+                                                             "node":  "Log History",
                                                              "type":  "main",
                                                              "index":  0
                                                          }
                                                      ]
                                                  ]
                                     },
-                        "Update Counter":  {
+                        "Read Day Schedule":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Get Today Subject",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "Get Today Subject":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Read Config",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "Match Config Row":  {
+                                                 "main":  [
+                                                              [
+                                                                  {
+                                                                      "node":  "Is GitHub Day?",
+                                                                      "type":  "main",
+                                                                      "index":  0
+                                                                  }
+                                                              ]
+                                                          ]
+                                             },
+                        "Is GitHub Day?":  {
                                                "main":  [
                                                             [
                                                                 {
-                                                                    "node":  "Get Data from Sheets",
+                                                                    "node":  "Fetch GitHub Top Repo",
+                                                                    "type":  "main",
+                                                                    "index":  0
+                                                                }
+                                                            ],
+                                                            [
+                                                                {
+                                                                    "node":  "Fetch Feed",
                                                                     "type":  "main",
                                                                     "index":  0
                                                                 }
                                                             ]
                                                         ]
-                                           }
+                                           },
+                        "Fetch GitHub Top Repo":  {
+                                                      "main":  [
+                                                                   [
+                                                                       {
+                                                                           "node":  "Build GitHub Post",
+                                                                           "type":  "main",
+                                                                           "index":  0
+                                                                       }
+                                                                   ]
+                                                               ]
+                                                  },
+                        "Build GitHub Post":  {
+                                                  "main":  [
+                                                               [
+                                                                   {
+                                                                       "node":  "Add Row",
+                                                                       "type":  "main",
+                                                                       "index":  0
+                                                                   }
+                                                               ]
+                                                           ]
+                                              },
+                        "Log History":  {
+                                            "main":  [
+                                                         [
+                                                             {
+                                                                 "node":  "Get Data from Sheets",
+                                                                 "type":  "main",
+                                                                 "index":  0
+                                                             }
+                                                         ]
+                                                     ]
+                                        }
                     },
-    "active":  false,
+    "active":  true,
     "nodes":  [
                   {
                       "id":  "79bc6072-465a-4ffd-9186-5662ac94c281",
@@ -688,8 +739,9 @@
                                                          "value":  {
                                                                        "Output":  "={{ $json.urn }}",
                                                                        "Status":  "=Completed",
-                                                                       "Post Link":  "=\"Post Link\": \"= https://www.linkedin.com/company/107520627/admin/dashboard/\"\n\n",
-                                                                       "row_number":  "={{ $(\u0027Get Data from Sheets\u0027).item.json.row_number }}"
+                                                                       "Post Link":  "={{ \u0027https://www.linkedin.com/feed/update/\u0027 + $json.urn }}",
+                                                                       "row_number":  "={{ $(\u0027Get Data from Sheets\u0027).item.json.row_number }}",
+                                                                       "Confirm  Content?":  "={{ $(\u0027Send Content Confirmation\u0027).item.json.data[\u0027Confirm  Content?\u0027] }}"
                                                                    },
                                                          "matchingColumns":  [
                                                                                  "row_number"
@@ -903,51 +955,6 @@
                                       }
                   },
                   {
-                      "id":  "readCounter",
-                      "name":  "Read Counter",
-                      "type":  "n8n-nodes-base.googleSheets",
-                      "typeVersion":  4.5,
-                      "position":  [
-                                       448,
-                                       608
-                                   ],
-                      "parameters":  {
-                                         "documentId":  {
-                                                            "__rl":  true,
-                                                            "value":  "1B3PlTi0ZIK15evn4SWy8wN8ycoKRIbPTzKDdo8pLljo",
-                                                            "mode":  "list",
-                                                            "cachedResultName":  "Linkedin Post Automation"
-                                                        },
-                                         "sheetName":  {
-                                                           "__rl":  true,
-                                                           "value":  "576116611",
-                                                           "mode":  "id"
-                                                       },
-                                         "options":  {
-
-                                                     }
-                                     },
-                      "credentials":  {
-                                          "googleSheetsOAuth2Api":  {
-                                                                        "id":  "p4FOKSPmSxNgJXxh",
-                                                                        "name":  "Google Sheets account"
-                                                                    }
-                                      }
-                  },
-                  {
-                      "id":  "pickSubject",
-                      "name":  "Pick Subject",
-                      "type":  "n8n-nodes-base.code",
-                      "typeVersion":  2,
-                      "position":  [
-                                       672,
-                                       608
-                                   ],
-                      "parameters":  {
-                                         "jsCode":  "\nconst rows = $(\u0027Read Config\u0027).all().map(i =\u003e i.json);\nconst counterRow = $(\u0027Read Counter\u0027).all().map(i =\u003e i.json)[0];\nconst counter = parseInt(counterRow.NextPostNumber, 10) || 1;\nconst idx = (counter - 1) % rows.length;\nconst row = rows[idx];\nconst isRss = row[\u0027Feed URL\u0027] \u0026\u0026 row[\u0027Feed URL\u0027].includes(\u0027/feed\u0027) || row[\u0027Feed URL\u0027].includes(\u0027.xml\u0027) || row[\u0027Feed URL\u0027].includes(\u0027/news/\u0027) || row[\u0027Feed URL\u0027].includes(\u0027atom\u0027);\nreturn [{ json: {\n  subject: row.Subject,\n  publication: row.Publication,\n  feedUrl: row[\u0027Feed URL\u0027],\n  hasFeed: !!isRss,\n  counter: counter,\n  totalRows: rows.length,\n  label: row.Subject.replace(/[^a-zA-Z0-9]+/g,\u0027\u0027) + \u0027_T\u0027 + counter\n}}];\n"
-                                     }
-                  },
-                  {
                       "id":  "fetchFeed",
                       "name":  "Fetch Feed",
                       "type":  "n8n-nodes-base.httpRequest",
@@ -977,7 +984,7 @@
                                        608
                                    ],
                       "parameters":  {
-                                         "jsCode":  "\nconst picked = $(\u0027Pick Subject\u0027).first().json;\nlet items = [];\ntry {\n  const xml = $json.data || \u0027\u0027;\n  const itemBlocks = xml.match(/\u003citem[\\s\\S]*?\u003c\\/item\u003e/g) || xml.match(/\u003centry[\\s\\S]*?\u003c\\/entry\u003e/g) || [];\n  const now = new Date();\n  const cutoff = new Date(now.getTime() - 30*24*60*60*1000);\n  for (const block of itemBlocks) {\n    const titleM = block.match(/\u003ctitle[^\u003e]*\u003e([\\s\\S]*?)\u003c\\/title\u003e/);\n    const dateM = block.match(/\u003cpubDate\u003e([\\s\\S]*?)\u003c\\/pubDate\u003e/) || block.match(/\u003cpublished\u003e([\\s\\S]*?)\u003c\\/published\u003e/) || block.match(/\u003cupdated\u003e([\\s\\S]*?)\u003c\\/updated\u003e/);\n    const linkM = block.match(/\u003clink[^\u003e]*\u003e([\\s\\S]*?)\u003c\\/link\u003e/) || block.match(/\u003clink[^\u003e]*href=\"([^\"]*)\"/);\n    if (!titleM || !dateM) continue;\n    const d = new Date(dateM[1].trim());\n    if (isNaN(d)) continue;\n    if (d \u003c cutoff) continue;\n    let title = titleM[1].replace(/\u003c!\\[CDATA\\[|\\]\\]\u003e/g,\u0027\u0027).trim();\n    items.push({ title, date: d, link: linkM ? linkM[1].trim() : \u0027\u0027 });\n  }\n  items.sort((a,b) =\u003e b.date - a.date);\n} catch (e) {}\n\nlet postDescription;\nif (items.length \u003e 0) {\n  const top = items[0];\n  postDescription = `Write about this recent development in ${picked.subject}: \"${top.title}\" (source: ${picked.publication}, published ${top.date.toDateString()}). Paraphrase in your own words -- never quote directly. Ground the post in this real, current story; add your own practical take as a data engineer / Fabric architect.`;\n} else {\n  postDescription = `Write a grounded, practical LinkedIn post about ${picked.subject}, drawing on current real developments in this space (from ${picked.publication}). No fetched article was available within the last 30 days, so speak from general current knowledge of the field -- stay factual, no invented specifics.`;\n}\n\nreturn [{ json: {\n  \u0027Post Description\u0027: postDescription,\n  \u0027Instructions\u0027: \u0027Keep it grounded and practical, not hype. Speak from my own experience as a data engineer/Fabric architect.\u0027,\n  \u0027Status\u0027: \u0027Pending\u0027,\n  \u0027Label\u0027: picked.label,\n  counter: picked.counter,\n  totalRows: picked.totalRows\n}}];\n"
+                                         "jsCode":  "\nconst picked = $(\u0027Match Config Row\u0027).first().json;\nlet items = [];\ntry {\n  const xml = $json.data || \u0027\u0027;\n  const itemBlocks = xml.match(/\u003citem[\\s\\S]*?\u003c\\/item\u003e/g) || xml.match(/\u003centry[\\s\\S]*?\u003c\\/entry\u003e/g) || [];\n  const now = new Date();\n  const cutoff = new Date(now.getTime() - 30*24*60*60*1000);\n  for (const block of itemBlocks) {\n    const titleM = block.match(/\u003ctitle[^\u003e]*\u003e([\\s\\S]*?)\u003c\\/title\u003e/);\n    const dateM = block.match(/\u003cpubDate\u003e([\\s\\S]*?)\u003c\\/pubDate\u003e/) || block.match(/\u003cpublished\u003e([\\s\\S]*?)\u003c\\/published\u003e/) || block.match(/\u003cupdated\u003e([\\s\\S]*?)\u003c\\/updated\u003e/);\n    const linkM = block.match(/\u003clink[^\u003e]*\u003e([\\s\\S]*?)\u003c\\/link\u003e/) || block.match(/\u003clink[^\u003e]*href=\"([^\"]*)\"/);\n    if (!titleM || !dateM) continue;\n    const d = new Date(dateM[1].trim());\n    if (isNaN(d)) continue;\n    if (d \u003c cutoff) continue;\n    let title = titleM[1].replace(/\u003c!\\[CDATA\\[|\\]\\]\u003e/g,\u0027\u0027).trim();\n    items.push({ title, date: d, link: linkM ? linkM[1].trim() : \u0027\u0027 });\n  }\n  items.sort((a,b) =\u003e b.date - a.date);\n} catch (e) {}\n\nlet postDescription;\nif (items.length \u003e 0) {\n  const top = items[0];\n  postDescription = `Write about this recent development in ${picked.subject}: \"${top.title}\" (source: ${picked.publication}, published ${top.date.toDateString()}). Paraphrase in your own words -- never quote directly. Ground the post in this real, current story; add your own practical take as a data engineer / Fabric architect.`;\n} else {\n  postDescription = `Write a grounded, practical LinkedIn post about ${picked.subject}, drawing on current real developments in this space (from ${picked.publication}). No fetched article was available within the last 30 days, so speak from general current knowledge of the field -- stay factual, no invented specifics.`;\n}\n\nreturn [{ json: {\n  \u0027Post Description\u0027: postDescription,\n  \u0027Instructions\u0027: \u0027Keep it grounded and practical, not hype. Speak from my own experience as a data engineer/Fabric architect.\u0027,\n  \u0027Status\u0027: \u0027Pending\u0027,\n  \u0027Label\u0027: picked.label\n}}];\n"
                                      }
                   },
                   {
@@ -1078,16 +1085,147 @@
                                       }
                   },
                   {
-                      "id":  "updateCounter",
-                      "name":  "Update Counter",
+                      "id":  "readDaySched",
+                      "name":  "Read Day Schedule",
                       "type":  "n8n-nodes-base.googleSheets",
                       "typeVersion":  4.5,
                       "position":  [
-                                       1552,
-                                       608
+                                       220,
+                                       600
                                    ],
                       "parameters":  {
-                                         "operation":  "update",
+                                         "operation":  "read",
+                                         "documentId":  {
+                                                            "__rl":  true,
+                                                            "value":  "1B3PlTi0ZIK15evn4SWy8wN8ycoKRIbPTzKDdo8pLljo",
+                                                            "mode":  "list",
+                                                            "cachedResultName":  "Linkedin Post Automation"
+                                                        },
+                                         "sheetName":  {
+                                                           "__rl":  true,
+                                                           "value":  "1145184683",
+                                                           "mode":  "id"
+                                                       },
+                                         "options":  {
+
+                                                     }
+                                     },
+                      "credentials":  {
+                                          "googleSheetsOAuth2Api":  {
+                                                                        "id":  "p4FOKSPmSxNgJXxh",
+                                                                        "name":  "Google Sheets account"
+                                                                    }
+                                      }
+                  },
+                  {
+                      "id":  "getToday",
+                      "name":  "Get Today Subject",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       440,
+                                       600
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "\nconst rows = $(\u0027Read Day Schedule\u0027).all().map(i =\u003e i.json);\nconst now = new Date();\nconst dayName = new Intl.DateTimeFormat(\u0027en-US\u0027, { weekday: \u0027long\u0027, timeZone: \u0027Australia/Brisbane\u0027 }).format(now);\nconst dateStr = new Intl.DateTimeFormat(\u0027en-CA\u0027, { timeZone: \u0027Australia/Brisbane\u0027 }).format(now);\nconst match = rows.find(r =\u003e r.Day === dayName);\nconst subject = match ? match.Subject : rows[0].Subject;\nreturn [{ json: { day: dayName, subject: subject, dateStr: dateStr } }];\n"
+                                     }
+                  },
+                  {
+                      "id":  "matchConfig",
+                      "name":  "Match Config Row",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       660,
+                                       600
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "\nconst today = $(\u0027Get Today Subject\u0027).first().json;\nconst configRows = $(\u0027Read Config\u0027).all().map(i =\u003e i.json);\nconst row = configRows.find(r =\u003e r.Subject === today.subject) || configRows[0];\nconst isGitHub = today.subject === \u0027GitHub\u0027;\nconst isRss = !isGitHub \u0026\u0026 row[\u0027Feed URL\u0027] \u0026\u0026 (row[\u0027Feed URL\u0027].includes(\u0027/feed\u0027) || row[\u0027Feed URL\u0027].includes(\u0027.xml\u0027) || row[\u0027Feed URL\u0027].includes(\u0027/news/\u0027) || row[\u0027Feed URL\u0027].includes(\u0027atom\u0027));\nreturn [{ json: {\n  day: today.day,\n  dateStr: today.dateStr,\n  subject: row.Subject,\n  publication: row.Publication,\n  feedUrl: row[\u0027Feed URL\u0027],\n  hasFeed: !!isRss,\n  isGitHub: isGitHub,\n  label: row.Subject.replace(/[^a-zA-Z0-9]+/g,\u0027\u0027) + \u0027_\u0027 + today.dateStr\n}}];\n"
+                                     }
+                  },
+                  {
+                      "id":  "isGithubIf",
+                      "name":  "Is GitHub Day?",
+                      "type":  "n8n-nodes-base.if",
+                      "typeVersion":  2,
+                      "position":  [
+                                       880,
+                                       600
+                                   ],
+                      "parameters":  {
+                                         "conditions":  {
+                                                            "options":  {
+                                                                            "caseSensitive":  true,
+                                                                            "leftValue":  "",
+                                                                            "typeValidation":  "loose",
+                                                                            "version":  2
+                                                                        },
+                                                            "combinator":  "and",
+                                                            "conditions":  [
+                                                                               {
+                                                                                   "id":  "ghcheck1",
+                                                                                   "operator":  {
+                                                                                                    "name":  "filter.operator.equals",
+                                                                                                    "type":  "string",
+                                                                                                    "operation":  "equals"
+                                                                                                },
+                                                                                   "leftValue":  "={{ $json.isGitHub }}",
+                                                                                   "rightValue":  "true"
+                                                                               }
+                                                                           ]
+                                                        },
+                                         "options":  {
+
+                                                     }
+                                     }
+                  },
+                  {
+                      "id":  "fetchGithubRepo",
+                      "name":  "Fetch GitHub Top Repo",
+                      "type":  "n8n-nodes-base.httpRequest",
+                      "typeVersion":  4.2,
+                      "position":  [
+                                       1100,
+                                       500
+                                   ],
+                      "parameters":  {
+                                         "url":  "=https://api.github.com/search/repositories?q=stars:%3E1000+pushed:%3E{{ $now.minus({days: 30}).format(\u0027yyyy-MM-dd\u0027) }}\u0026sort=stars\u0026order=desc\u0026per_page=5",
+                                         "options":  {
+                                                         "headers":  {
+                                                                         "parameters":  [
+                                                                                            {
+                                                                                                "name":  "User-Agent",
+                                                                                                "value":  "saptarshis-tech-news-n8n"
+                                                                                            }
+                                                                                        ]
+                                                                     }
+                                                     }
+                                     }
+                  },
+                  {
+                      "id":  "buildGithubPost",
+                      "name":  "Build GitHub Post",
+                      "type":  "n8n-nodes-base.code",
+                      "typeVersion":  2,
+                      "position":  [
+                                       1320,
+                                       500
+                                   ],
+                      "parameters":  {
+                                         "jsCode":  "\nconst picked = $(\u0027Match Config Row\u0027).first().json;\nconst data = $json;\nlet postDescription;\nif (data.items \u0026\u0026 data.items.length \u003e 0) {\n  const repo = data.items[0];\n  postDescription = `Write about this real, currently trending GitHub repository: \"${repo.full_name}\" -- ${repo.description || \u0027no description provided\u0027}. It has ${repo.stargazers_count.toLocaleString()} stars, primary language ${repo.language || \u0027unspecified\u0027}, repo URL: ${repo.html_url}. Paraphrase in your own words -- never quote directly. Explain what it does and why it might be practically useful for a data engineer / Fabric architect; add your own honest take on whether it\u0027s worth trying. Mention the repo name and link naturally in the post.`;\n} else {\n  postDescription = `Write a grounded LinkedIn post about a notable, actively-maintained open source GitHub project relevant to data engineering or AI tooling. No specific repo data was available today -- speak generally about what makes a repo worth watching, stay factual, no invented specifics.`;\n}\nreturn [{ json: {\n  \u0027Post Description\u0027: postDescription,\n  \u0027Instructions\u0027: \u0027Keep it grounded and practical, not hype. Speak from my own experience as a data engineer/Fabric architect.\u0027,\n  \u0027Status\u0027: \u0027Pending\u0027,\n  \u0027Label\u0027: picked.label\n}}];\n"
+                                     }
+                  },
+                  {
+                      "id":  "logHistory",
+                      "name":  "Log History",
+                      "type":  "n8n-nodes-base.googleSheets",
+                      "typeVersion":  4.5,
+                      "position":  [
+                                       1760,
+                                       600
+                                   ],
+                      "parameters":  {
+                                         "operation":  "append",
                                          "documentId":  {
                                                             "__rl":  true,
                                                             "value":  "1B3PlTi0ZIK15evn4SWy8wN8ycoKRIbPTzKDdo8pLljo",
@@ -1101,17 +1239,17 @@
                                                        },
                                          "columns":  {
                                                          "mappingMode":  "defineBelow",
-                                                         "matchingColumns":  [
-                                                                                 "CounterName"
-                                                                             ],
                                                          "value":  {
-                                                                       "CounterName":  "NextPostNumber",
-                                                                       "CounterValue":  "={{ ($json.counter % $json.totalRows) + 1 }}"
+                                                                       "Date":  "={{ $(\u0027Match Config Row\u0027).first().json.dateStr }}",
+                                                                       "Day":  "={{ $(\u0027Match Config Row\u0027).first().json.day }}",
+                                                                       "Subject":  "={{ $(\u0027Match Config Row\u0027).first().json.subject }}",
+                                                                       "Label":  "={{ $(\u0027Match Config Row\u0027).first().json.label }}",
+                                                                       "Status":  "Queued"
                                                                    },
                                                          "schema":  [
                                                                         {
-                                                                            "id":  "CounterName",
-                                                                            "displayName":  "CounterName",
+                                                                            "id":  "Date",
+                                                                            "displayName":  "Date",
                                                                             "required":  false,
                                                                             "defaultMatch":  false,
                                                                             "canBeUsedToMatch":  true,
@@ -1120,8 +1258,38 @@
                                                                             "removed":  false
                                                                         },
                                                                         {
-                                                                            "id":  "CounterValue",
-                                                                            "displayName":  "CounterValue",
+                                                                            "id":  "Day",
+                                                                            "displayName":  "Day",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "removed":  false
+                                                                        },
+                                                                        {
+                                                                            "id":  "Subject",
+                                                                            "displayName":  "Subject",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "removed":  false
+                                                                        },
+                                                                        {
+                                                                            "id":  "Label",
+                                                                            "displayName":  "Label",
+                                                                            "required":  false,
+                                                                            "defaultMatch":  false,
+                                                                            "canBeUsedToMatch":  true,
+                                                                            "display":  true,
+                                                                            "type":  "string",
+                                                                            "removed":  false
+                                                                        },
+                                                                        {
+                                                                            "id":  "Status",
+                                                                            "displayName":  "Status",
                                                                             "required":  false,
                                                                             "defaultMatch":  false,
                                                                             "canBeUsedToMatch":  true,
@@ -1130,9 +1298,6 @@
                                                                             "removed":  false
                                                                         }
                                                                     ]
-                                                     },
-                                         "options":  {
-
                                                      }
                                      },
                       "credentials":  {
