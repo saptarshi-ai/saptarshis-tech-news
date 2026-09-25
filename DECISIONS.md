@@ -71,4 +71,26 @@
 **Decision:** `Update Google Sheet` now writes the real approval decision (`$('Send Content Confirmation').item.json.data['Confirm  Content?']`) and a real constructed post URL (`https://www.linkedin.com/feed/update/{urn}`), replacing two long-standing no-ops (one column never written at all; the other a broken static string).
 **Why:** Found while investigating the "same subject twice" complaint -- neither bug was the direct cause, but both were real, silent defects worth fixing while already deep in this part of the workflow.
 
+### 2026-09-25 - ARCH - n8n runtime moved from Docker Desktop to Docker Engine inside WSL
+
+**Decision:** Run n8n on Docker Engine (CE) inside the Ubuntu WSL distro, with systemd auto-starting `docker.service` at WSL boot, instead of Docker Desktop.
+**Why:** A Windows Update reboot at ~20:30 on 2026-09-24 killed Docker Desktop (it only starts inside a signed-in session) and silently broke the 04:15 trigger the next morning -- nobody was signed in when the PC came back up. This is structural: any forced reboot with nobody signed in will always kill Docker Desktop. Docker Engine in WSL under systemd has no sign-in dependency at all.
+**Alternatives rejected:** Auto sign-in + lock screen (simpler, but still a security trade-off and doesn't remove the underlying fragility); just fixing Docker Desktop's own auto-start setting (doesn't help if nobody's signed in to trigger it in the first place).
+
+### 2026-09-25 - PROCESS - Volume backup verified by restore-and-diff before any migration step touched the real data
+
+**Decision:** Before migrating, backed up the `n8n_data` volume, then restored that backup into a *throwaway* test volume and diffed it against the original (file listing, `database.sqlite` size/timestamp, `config`/encryption-key byte match) -- only proceeded once identical.
+**Why:** User required each stage tested before shipping. The single highest-risk artifact in this migration is n8n's own data (workflows, encrypted credentials, encryption key) -- losing or corrupting it would mean re-doing every credential login by hand.
+
+### 2026-09-25 - ARCH - Unattended wake/boot/sleep handled by three S4U Scheduled Tasks, not by storing a password
+
+**Decision:** `n8n-boot-start` (at Windows startup), `n8n-morning-wake` (daily 03:50, wake-capable), `n8n-restore-sleep` (daily 06:00) -- all registered with S4U logon type and Limited run level.
+**Why:** S4U lets a task run whether or not anyone is signed in, for local-only actions (starting WSL, running `powercfg`), without Windows ever storing the account password. Registering these required one UAC consent click from the user (not a password -- the account is already a local Administrator) since Task Scheduler registration itself needs elevation; the tasks' own execution afterward needs neither.
+**Alternatives rejected:** Storing credentials with the task ("Run whether user is logged on or not" with a saved password) -- unnecessary given S4U covers this use case, and avoids persisting a password anywhere on disk.
+
+### 2026-09-25 - PROCESS - Docker Desktop kept installed, but auto-start removed, as an explicit rollback path
+
+**Decision:** Docker Desktop's Run-key auto-start entry was deleted and the app stopped, but the application itself was left installed rather than uninstalled.
+**Why:** User's own rollback plan: keep Docker Desktop available until n8n has run correctly under the new setup for several consecutive mornings, only then consider uninstalling it.
+
 <!-- Add new entries above this line -->

@@ -6,40 +6,39 @@
 
 ## Last session
 
-**Date:** 2026-09-24
-**What was done (major redesign -- rotation model replaced entirely):**
+**Date:** 2026-09-25
+**What was done (infra troubleshooting + migration, not workflow content):**
 
-- **Diagnosed why two posts came out on the same subject:** the old counter-based rotation had a real race condition (from repeated manual test/delete cycles during earlier debugging) that kept resetting to index 0 (Microsoft Fabric). Root cause traced directly from the live Sheet data, not guessed.
-- **Full redesign, agreed with user, then built and tested end-to-end:**
-  - New `DaySchedule` tab (Day -> Subject, user-editable): Sun=Power BI, Mon=AI, Tue=Microsoft Fabric, Wed=GitHub, Thu=Data Engineering, Fri=Machine Learning, Sat=System Design.
-  - `Counter` tab replaced entirely with a `History` tab (Date, Day, Subject, Label, Status) -- a real audit log instead of a single fragile number. Removes the whole class of race-condition bug, since day-of-week lookup needs no incrementing state at all.
-  - New Wednesday/GitHub branch: calls the real GitHub Search API directly (`api.github.com/search/repositories`, sorted by stars, filtered to recently pushed) -- no MCP connector needed, since n8n's unattended 4:15am run can't use MCP tools (those are for Claude's own conversational use only). Grounds the post in a real repo (name, stars, description, URL).
-  - Fixed two real pre-existing bugs found while investigating: `Add Row`/`Update Google Sheet` never wrote to `Confirm  Content?` at all (now writes the user's actual Yes/No/feedback decision back); `Post Link` was a broken static string literal, not a real link (now builds a real URL from the post's LinkedIn URN).
-- **Nodes added:** Read Day Schedule, Get Today Subject, Match Config Row, Is GitHub Day? (IF), Fetch GitHub Top Repo, Build GitHub Post, Log History. **Nodes removed:** Read Counter, Pick Subject, Update Counter.
-- **Real bugs hit and fixed during testing (both caught by actually running it, not assumed):**
-  1. `Is GitHub Day?` IF node: malformed boolean-operator schema (`Wrong type: '' is a string but was expecting a boolean`) -- switched to a string-equals comparison matching the proven pattern used elsewhere in this workflow.
-  2. Same node, second pass: strict type validation rejected a real JS boolean against a string `"true"` -- switched `typeValidation` to `loose`.
-- **Verified live, end-to-end:** a full run correctly identified today as Thursday, correctly routed to the RSS branch (not GitHub), picked Data Engineering per the new DaySchedule mapping, generated real grounded content (James Serra blog, dash-structured, no repeats), and logged a correct row to History (`2026-09-24 | Thursday | Data Engineering | Queued`). Sitting in Gmail for approval, unchanged from before.
-- Browser tooling was flaky for a stretch this session (third-party cookies blocking the extension); resolved once the user allowed them.
+- **Diagnosed the 04:15 trigger failure:** read-only investigation via Desktop Commander (Windows event log, Docker Desktop logs, uptime, logon sessions) found a Windows Update reboot at ~20:30 on 2026-09-24 killed Docker Desktop, and since nobody was signed in overnight, it never restarted. Explicitly told not to change anything during this first pass -- diagnosis only.
+- **Agreed fix:** move n8n off Docker Desktop entirely onto Docker Engine (CE) inside the existing Ubuntu WSL distro, with systemd starting Docker at WSL boot -- removes the sign-in dependency completely.
+- **Migration executed, each stage tested before moving on (per user's explicit "test before ship" instruction):**
+  1. Backed up `n8n_data` volume to `_backups\n8n_data_pre-wsl-migration_2026-09-25\`. Verified by restoring into a throwaway test volume and diffing against the original -- file listing, `database.sqlite`, and `config` (encryption key) all matched exactly.
+  2. Found Docker CE already installed and `docker.service` enabled inside Ubuntu WSL (leftover from an earlier attempt). Added user to the `docker` group -- required one interactive `sudo` command; opened a visible WSL terminal window so the user could type their own password directly (Claude never enters or stores passwords, refused when asked to store it).
+  3. Restored the real volume into the WSL engine, brought n8n up via the existing `docker-compose.yml`. Verified reachable at `http://localhost:5678` from both WSL and Windows.
+  4. Stopped Docker Desktop entirely (process + removed its Run-key auto-start) and re-confirmed n8n stayed up with zero dependency on it.
+- **Automation added:** three Scheduled Tasks (`n8n-boot-start`, `n8n-morning-wake` at 03:50 wake-capable, `n8n-restore-sleep` at 06:00), all S4U-logon so they run with nobody signed in and no password stored. Scripts in `_scripts\`. Baseline idle-sleep set to 10 minutes. All three functionally tested by manual trigger -- exit code 0, correct power-setting changes confirmed each time.
+- **New folders:** `_scripts\` (the three PowerShell scripts + registration script), `_docs\sessions\` (for dated session logs going forward).
+- User's daily approval window is 04:30-05:00; cannot currently approve from phone (separate, unaddressed problem).
 
 **Decisions made:**
-- See DECISIONS.md -- several new entries this session, all under 2026-09-24.
+- See DECISIONS.md -- four new entries this session, all under 2026-09-25.
 
 **What broke / surprises:**
-- The counter-based rotation's race condition (root cause of the "same subject twice" complaint) -- fully explained and resolved by removing the counter model entirely, not by patching it.
-- IF node schema for boolean conditions is easy to get wrong via the API (no UI validation to catch it) -- string-comparison + loose type validation is the safer pattern for future IF nodes built this way.
+- Registering S4U Scheduled Tasks requires Administrator elevation even though the tasks themselves don't need it to run -- needed one UAC consent click (not a password; user is already a local Administrator).
+- Docker Desktop had a startup registry entry that would have re-introduced the exact same conflict/fragility on next boot if left alone -- removed.
 
 ---
 
 ## Next session -- start here
 
-1. **Still open from last session:** live end-to-end test of the "No + feedback" regeneration path specifically (wiring confirmed correct, never actually clicked through). Low priority now given how much else has been verified working, but still genuinely untested.
-2. **Wednesday/GitHub branch has not yet been triggered live** (today was Thursday) -- worth a manual test run once the day rolls around, or a one-off manual trigger, to confirm the GitHub Search API call and Build GitHub Post logic work as designed.
-3. Same open items as before: verify/expand "reasonably confident" (not individually confirmed) RSS feeds in Config for Data Science, Machine Learning, AI, PySpark; Microsoft Purview still has no working feed (falls back to description-only generation).
-4. Confirm Content?/Post Link fixes haven't been observed on a real approved post yet (today's run is still pending approval as of session end) -- worth checking the Sheet after approval to confirm both write correctly in practice, not just in theory.
+1. **Confirm the overnight test.** Ask the user how last night went: did the PC wake at 03:50, was n8n up in time for the 04:15 trigger, did today's post get queued and reach the approval email in the 04:30-05:00 window, did the machine sleep again after 06:00. This is the one thing that could not be tested live (would have required sleeping the machine mid-session).
+2. If the wake/boot chain didn't fire correctly, debug from Task Scheduler history (`Get-ScheduledTaskInfo` LastRunTime/LastTaskResult for all three `n8n-*` tasks) and Windows event log around 03:50-04:15.
+3. Once a few mornings run clean, revisit whether to uninstall Docker Desktop entirely (currently kept installed but auto-start disabled, as agreed rollback).
+4. Phone approval is still unsolved -- user mentioned it in passing, not yet scoped as a task.
+5. All open workflow-content items from 2026-09-24 (regeneration path test, GitHub/Wednesday branch live test, RSS feed coverage, Purview feed, reference-style rewrite, newsletter draft) are unchanged -- see TASKS.md.
 
 **Blockers:**
-- None. Workflow is active, tested, and in a known-good state.
+- None for infra. Waiting on one overnight cycle to confirm the wake/sleep automation actually works unattended.
 
 ---
 
@@ -47,8 +46,9 @@
 
 | Question | Owner | Status |
 |----------|-------|--------|
+| Did the PC wake at 03:50 and run cleanly overnight (first real unattended test)? | User to confirm next session | Open |
 | Does "No" + feedback regeneration actually resend a working email end-to-end? | User/Claude to test | Still open |
-| Does the GitHub/Wednesday branch actually work when it fires for real? | Untested live | Open -- built and reviewed, not yet run |
+| Does the GitHub/Wednesday branch actually work when it fires for real? | Untested live | Open |
 
 ---
 
