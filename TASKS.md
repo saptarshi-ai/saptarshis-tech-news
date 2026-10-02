@@ -13,7 +13,9 @@
 | 6 | [ ] Confirm Confirm Content?/Post Link fixes work on a real approved post | Fixed in code, not yet observed on an actually-approved row | Once today's pending post is approved | |
 | 7 | [ ] Rebuild Generate Post Content's structure/rhythm to match the Leon Gordon reference style | Short, near one-sentence lines, heavy whitespace, contrarian opening, honest-nuance beat, reframe, close -- a real rhythm shift from current 2-4 sentence paragraphs | User-provided reference posts (2 screenshots) | |
 | 8 | [ ] Build weekly manual-publish Newsletter draft (Option B) | Native LinkedIn Pulse/Newsletter article creation has no public write API (confirmed) -- Claude prepares a draft in the editorial voice/structure, user pastes into LinkedIn's own "Write an article" editor and adds the banner image themselves. Gives daily posts' close a real "read more" destination to point to. | Weekly cadence, TBD day | |
-| 9 | [ ] Confirm overnight wake/boot/sleep automation actually fired unattended | 03:50 wake, n8n up by 04:15, post reached approval by 04:30-05:00, machine slept again after 06:00 -- the one part of the 2026-09-25 migration that could not be tested live | First morning after 2026-09-25 | |
+| 9 | [ ] Confirm overnight wake automation actually fired unattended | 2026-10-03: original chain never worked (n8n died ~60s after start; hibernate blocked wake). Fixed -- now 03:45 wake, held awake + WSL until 06:00, no forced sleep. Check: wake event at 03:45, `[morning]` lines in `_scripts\logs\n8n-tasks.log`, 04:15 execution in n8n | 2026-10-04 morning | |
+| 10 | [ ] Reconnect Google Sheets + Gmail credentials in n8n | Refresh token expired -- "Read Day Schedule" fails on run | Now | |
+| 11 | [ ] Publish Google Cloud OAuth app from Testing to In production, then reconnect both credentials once more | Testing mode = 7-day refresh-token expiry; workflow will break weekly until done | Now | |
 
 ## Pending
 

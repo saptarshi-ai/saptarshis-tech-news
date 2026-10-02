@@ -5,6 +5,25 @@ Append at the top. One line per structural change.
 
 ---
 
+## 2026-10-03 - Daily trigger fixed: WSL keepalive added, wake moved to 03:45, all hibernate sources disabled; Google OAuth credentials found expired
+
+Trigger: no post had fired for several days. Read-only diagnosis via Desktop Commander found three separate faults, none of them in the workflow itself:
+(1) **n8n died ~60s after every start.** Both `boot-start-n8n.ps1` and `morning-wake-prep.ps1` ran `wsl -- docker start n8n` and exited. With no open WSL session, WSL idle-shuts the VM and Docker/n8n go with it. Broken since the 2026-09-25 migration. Errors were hidden by `| Out-Null`, so tasks still reported exit 0.
+(2) **Wake-from-sleep never worked.** Wake timers can't wake a PC from hibernate, and three things hibernated it: `Atlas_MorningSleep` (`shutdown /h` at 04:45 -- also mid approval window), `SaptarshiOS_IdleSleep_6AM` (`SetSuspendState` hibernates when hibernate is enabled), and the power plan's AC hibernate-after = 2h. Event log showed the PC sleeping straight through 03:50 on 01/10 and 02/10.
+(3) **Google Sheets (and likely Gmail) OAuth credential expired** -- found on manual run, "Read Day Schedule" failed with a revoked/expired refresh token. Consistent with the Google Cloud OAuth app being in Testing mode (7-day refresh-token expiry).
+
+Fixes (scripts + tasks only; workflow untouched; Atlas files untouched):
+- `boot-start-n8n.ps1`: now holds `wsl -- sleep infinity` after starting n8n; real logging to `_scripts\logs\n8n-tasks.log`. Task `n8n-boot-start` time limit 72h -> none.
+- `morning-wake-prep.ps1`: no longer changes power settings. Sets a `SetThreadExecutionState` stay-awake lock, starts n8n, holds lock + WSL session until 06:00, then releases. Task `n8n-morning-wake` 03:50 -> 03:45, wake-to-run on, limit 3h.
+- Disabled (not deleted): `n8n-restore-sleep` (no longer needed; set 10-min sleep, conflicting with user's 30), `Atlas_MorningSleep`, `SaptarshiOS_IdleSleep_6AM` -- both latter at the user's explicit request.
+- Power plan AC: sleep after 30 min (was "never", left by old script), hibernate-after never (was 2h).
+- One-off elevated script `_scripts\apply-fix-admin.ps1` applied the task/power changes via a single UAC click; full before/after logged locally.
+- `.gitignore`: `_scripts/logs/` and `_scripts/_backup_*/` excluded (logs contain machine/user names; repo is public).
+
+Verified: n8n stayed up 6+ min after the change (previously ~60s); `n8n-morning-wake` next run 04/10 03:45 with wake on. Not yet verified: an actual overnight wake, and the post after credentials are reconnected.
+
+---
+
 ## 2026-09-25 - n8n host migrated from Docker Desktop to Docker Engine inside WSL (Ubuntu); unattended wake/sleep automation added
 
 Trigger: the 04:15 daily run silently failed to fire on 2026-09-25. Root cause traced via Desktop Commander (event log, Docker logs, uptime) to a Windows Update reboot at ~20:30 the prior night -- Docker Desktop only starts inside a signed-in session, and nobody was signed in when the PC came back up, so Docker (and n8n) never restarted. This is a structural weakness (any forced reboot kills the trigger), not a one-off.

@@ -8,3 +8,6 @@ _data/
 *.db
 *.sqlite
 _backups/
+# Local task logs (contain machine/user names) and local script backups
+_scripts/logs/
+_scripts/_backup_*/

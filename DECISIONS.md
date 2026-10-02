@@ -93,4 +93,27 @@
 **Decision:** Docker Desktop's Run-key auto-start entry was deleted and the app stopped, but the application itself was left installed rather than uninstalled.
 **Why:** User's own rollback plan: keep Docker Desktop available until n8n has run correctly under the new setup for several consecutive mornings, only then consider uninstalling it.
 
+### 2026-10-03 - ARCH - WSL kept alive by a held session, not by a global WSL config change
+
+**Decision:** `n8n-boot-start` ends with a blocking `wsl -d Ubuntu -- sleep infinity` (task time limit removed); `n8n-morning-wake` holds its own WSL session until 06:00.
+**Why:** WSL idle-shuts the VM shortly after the last `wsl.exe` exits, killing Docker and n8n -- the real reason the 04:15 trigger never fired after the 2026-09-25 migration. A held session fixes it inside this project's own scripts/tasks only.
+**Alternatives rejected:** `vmIdleTimeout=-1` in `%USERPROFILE%\.wslconfig` -- global to every WSL distro on the machine, outside this project's scope.
+
+### 2026-10-03 - ARCH - Stay-awake via SetThreadExecutionState instead of changing the power plan
+
+**Decision:** `morning-wake-prep.ps1` (now 03:45) holds an `ES_CONTINUOUS | ES_SYSTEM_REQUIRED` lock until 06:00 and changes no power settings. `n8n-restore-sleep` disabled.
+**Why:** User wants the PC awake 03:45-06:00 and then the machine's own 30-min idle sleep to apply, with no forced sleep. A held lock needs nothing restored afterwards, so there's no failure mode where sleep is left at "never" (which the old 06:00 restore task did when it failed on 01/10).
+**Supersedes:** 2026-09-25 "Unattended wake/boot/sleep handled by three S4U Scheduled Tasks" -- the restore-sleep task and the `powercfg /change` approach.
+
+### 2026-10-03 - PROCESS - Hibernate removed from the overnight path
+
+**Decision:** Disabled `Atlas_MorningSleep` (04:45 `shutdown /h`) and `SaptarshiOS_IdleSleep_6AM` (`SetSuspendState`, which hibernates when hibernate is enabled); power plan AC hibernate-after set to never. Tasks disabled, not deleted; no Atlas or governance files edited.
+**Why:** Wake timers cannot wake the PC from hibernate -- confirmed by the event log (slept through 03:50 on 01/10 and 02/10). Any one of the three hibernate sources breaks the next morning's wake. All three changes explicitly approved by the user.
+**Alternatives rejected:** Re-waking every 5 min after Atlas's 04:45 hibernate -- doesn't work from hibernate, and adds moving parts.
+
+### 2026-10-03 - PROCESS - Google OAuth app to be published to Production
+
+**Decision:** Reconnect the Google Sheets + Gmail credentials, and move the Google Cloud OAuth consent screen from Testing to In production.
+**Why:** Testing-mode OAuth apps get refresh tokens that expire after 7 days -- matches the credential dying about a week after the 2026-09-21 setup. Without publishing, the workflow breaks weekly regardless of the wake fix.
+
 <!-- Add new entries above this line -->
