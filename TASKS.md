@@ -13,9 +13,6 @@
 | 6 | [ ] Confirm Confirm Content?/Post Link fixes work on a real approved post | Fixed in code, not yet observed on an actually-approved row | Once today's pending post is approved | |
 | 7 | [ ] Rebuild Generate Post Content's structure/rhythm to match the Leon Gordon reference style | Short, near one-sentence lines, heavy whitespace, contrarian opening, honest-nuance beat, reframe, close -- a real rhythm shift from current 2-4 sentence paragraphs | User-provided reference posts (2 screenshots) | |
 | 8 | [ ] Build weekly manual-publish Newsletter draft (Option B) | Native LinkedIn Pulse/Newsletter article creation has no public write API (confirmed) -- Claude prepares a draft in the editorial voice/structure, user pastes into LinkedIn's own "Write an article" editor and adds the banner image themselves. Gives daily posts' close a real "read more" destination to point to. | Weekly cadence, TBD day | |
-| 9 | [ ] Confirm overnight wake automation actually fired unattended | 2026-10-03: original chain never worked (n8n died ~60s after start; hibernate blocked wake). Fixed -- now 03:45 wake, held awake + WSL until 06:00, no forced sleep. Check: wake event at 03:45, `[morning]` lines in `_scripts\logs\n8n-tasks.log`, 04:15 execution in n8n | 2026-10-04 morning | |
-| 10 | [ ] Reconnect Google Sheets + Gmail credentials in n8n | Refresh token expired -- "Read Day Schedule" fails on run | Now | |
-| 11 | [ ] Publish Google Cloud OAuth app from Testing to In production, then reconnect both credentials once more | Testing mode = 7-day refresh-token expiry; workflow will break weekly until done | Now | |
 
 ## Pending
 
@@ -23,9 +20,15 @@
 |---|------|---------|------|
 | 3 | [ ] Verify/expand RSS feed coverage for "reasonably confident" Config subjects | Data Science, Machine Learning, AI, PySpark, Data Engineering currently use platform-standard guesses, not individually confirmed | |
 | 4 | [ ] Find a working Microsoft Purview feed, or accept description-only generation permanently for that subject | Currently falls back gracefully | |
+| 12 | [ ] Post length runs ~3,000 chars vs 2,600-2,800 target | Model treats the range as a guide | |
+| 13 | [ ] System message date anchor is a fixed (non-expression) field, so its $now expression is sent as literal text | Prompt text carries the live date since 09/10; fix only if posts drift on dates again | |
+| 14 | [ ] Watch for container -> Google connection drops (seen 10/10, 11/10) | Compose-level DNS/network fix only if it recurs, with user OK | |
 
 ## Done
 
 | # | Task | Completed |
 |---|------|-----------|
 | 1 | [done] Initial setup | 2026-09-20 |
+| 9 | [done] Overnight wake automation fires unattended (04:15 on time 12-18/10 after 11/10 docker restart fix) | 2026-10-12 |
+| 10 | [done] Reconnect Google Sheets + Gmail credentials (after production publish) | 2026-10-17 |
+| 11 | [done] Publish Google OAuth app to In production (Pages home/privacy in this repo) | 2026-10-16 |

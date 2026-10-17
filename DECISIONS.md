@@ -117,3 +117,32 @@
 **Why:** Testing-mode OAuth apps get refresh tokens that expire after 7 days -- matches the credential dying about a week after the 2026-09-21 setup. Without publishing, the workflow breaks weekly regardless of the wake fix.
 
 <!-- Add new entries above this line -->
+
+### 2026-10-09 - CONTENT - No hardcoded year in the generation prompt
+
+**Decision:** Generate Post Content's prompt defines "up-to-date" as published within the last 3 months of the machine date (Brisbane `$now`), takes facts only from the Post Description, and never mentions a year unless the source does. Prompt 2 (User) message removed; its source-data lines moved into the prompt text.
+**Why:** Two hardcoded "2025" lines overrode the date anchor, so every post referenced 2025. Gemini's training data can't supply recent facts, so recency must come from the fetched feed item.
+**Alternatives rejected:** Swapping "2025" for a live year -- would invite invented "current-year facts".
+
+### 2026-10-11 - ARCH - Morning task restarts n8n daily
+
+**Decision:** `_scripts\morning-wake-prep.ps1` runs `docker restart n8n` at 03:45 instead of `docker start`.
+**Why:** n8n's Schedule Trigger is a countdown that freezes while the PC sleeps (WSL suspended), so any daytime sleep pushed the 04:15 run later. A restart re-arms it 30 min before the run, while the PC is held awake.
+**Alternatives rejected:** Triggering the workflow from Windows Task Scheduler -- bigger change, touches the workflow.
+
+### 2026-10-16 - PROCESS - Google OAuth app published to Production, pages hosted in this repo
+
+**Decision:** OAuth app (GCP project gen-lang-client-0796267227) set to "In production", unverified, personal use. Home and privacy pages served by GitHub Pages from this repo's `docs/` folder.
+**Why:** Testing mode expires refresh tokens every 7 days. Publishing needs home/privacy links on an owned domain. Reusing this repo avoids a second repo (user's call).
+**Supersedes:** 2026-10-03 - PROCESS - Google OAuth app to be published to Production.
+
+### 2026-10-17 - TECH - Retry On Fail on Generate Post Content
+
+**Decision:** Retry On Fail on, 3 tries, 5000 ms between tries (n8n maximum).
+**Why:** Gemini returns transient 503 "high demand" errors (15/10, 16/10).
+**Alternatives rejected:** None -- n8n's own error message recommends it. Covers short blips only; minute-long outages still fail.
+
+### 2026-10-18 - PROCESS - Every change is exported and pushed in the same session
+
+**Decision:** Any change to the n8n workflow, scripts or docs is exported (workflow re-exported from n8n into `workflows/AI_Generated_LinkedIn.json`, same 5-key format) and pushed to GitHub in the same session, after the user's go.
+**Why:** The repo copy went stale from 24/09 to 18/10 while fixes lived only in n8n. n8n runs from its own database; the JSON file is a manual snapshot.

@@ -1,10 +1,41 @@
-﻿# Changelog -- AI Generated LinkedIn (Saptarshi's Tech Hub)
+# Changelog -- AI Generated LinkedIn (Saptarshi's Tech Hub)
 
 Format: `YYYY-MM-DD - what changed - why`
 Append at the top. One line per structural change.
 
 ---
 
+## 2026-10-17 - Google OAuth app moved to production (no more 7-day expiry); Retry On Fail on Generate Post Content; Pages site for OAuth
+
+Trigger: no post 15/10 and 16/10 although the 04:15 trigger fired both days (11/10 restart fix confirmed working 12-17/10).
+- 15/10 cause: Gemini API 503 "model experiencing high demand" at Generate Post Content (provider-side, transient).
+- 16/10 cause: Google Sheets credential "needs to be reconnected" -- OAuth app in Testing mode, refresh tokens expire after 7 days (last reconnect ~08/10).
+Fixes:
+- GitHub Pages enabled on `saptarshis-tech-news` (master, `/docs`): `docs/index.md` (home) + `docs/privacy.md` (privacy policy) -- live at https://saptarshi-ai.github.io/saptarshis-tech-news/. Required by Google to publish an app using Gmail/Sheets scopes. Owner email deliberately left off the public pages.
+- Google Cloud project gen-lang-client-0796267227 (named "Project Atlas" in GCP; holds client "n8n Google Sheets/Gmail"): Branding -> home page, privacy link, authorised domain `saptarshi-ai.github.io`; Audience -> Publish app -> status "In production" (unverified, personal use -- "unverified app" screen on sign-in is expected).
+- Google Sheets + Gmail credentials reconnected in n8n after publishing (17/10), so tokens no longer expire weekly.
+- Generate Post Content node: Settings -> Retry On Fail on, 3 tries, 5000 ms wait (n8n max). Covers short 503 blips only. Published with version note; verified in published version via DB. Not live-tested (Execute step would re-run upstream nodes and write a Sheet row).
+- Local repo fast-forwarded to fe1ffd5 (the two docs/ commits).
+Housekeeping: empty repo `saptarshi-ai.github.io` created by mistake 16/10 and deleted by user 17/10.
+Open: workflow JSON in repo not re-exported since 09/10 (prompt + retry changes live only in n8n); uncommitted local changes (CHANGELOG, morning-wake-prep.ps1, session logs) not yet pushed.
+
+---
+## 2026-10-13
+
+- 15:16 Added project-goal.md, architecture.md, guardrails.md from PROJECT_TEMPLATE. No existing file was overwritten.
+
+
+## 2026-10-11 - Morning script now restarts n8n (fixes drifting 04:15 trigger); prompt de-hardcoded from "2025"; temp DNS probe
+
+Trigger: no post on 11/10 -- no execution at all. Execution history showed every scheduled run failing or misfiring since 26/09 (posts only went out via manual runs), plus off-schedule runs (06/10 05:39, 10/10 03:55).
+Root cause: n8n's Schedule Trigger arms a countdown to the next 04:15. That countdown freezes while the PC sleeps (WSL VM suspended) and resumes on wake, so each daytime sleep pushes the next run later by the sleep length (10/10: slept 05:42-13:53, so Sunday's 04:15 would have fired ~12:25). Clock resync after wake can also fire it early.
+Fix: `_scripts\morning-wake-prep.ps1` line 15-16: `docker start n8n` -> `docker restart n8n`. n8n re-arms the trigger fresh at 03:45; PC is held awake 03:45-06:00 so nothing can freeze it before 04:15. Tested by restart (healthy in ~20s, healthz 200, DNS OK) before the edit; syntax check passed. Workflow, boot script and other tasks untouched.
+Also this session:
+- 09/10: Generate Post Content -- removed both hardcoded "2025" lines; "up-to-date" = last 3 months from machine date (Brisbane), facts from Post Description only, no year unless in source; removed Prompt 2 (User) message (its source-data injection moved into the prompt text); added "Include relevant lowercase hashtags." Published via n8n UI with version notes. Repo `workflows\AI_Generated_LinkedIn.json` NOT yet re-exported.
+- 10/10: temp task `n8n-dns-probe-TEMP` (03:50-04:35, 11/10) probed container DNS/HTTPS; all 10 checks passed -- DNS not the cause of 11/10. Task auto-deletes 2 days after end. Log: `_scripts\logs\dns-probe.log`.
+Open: container's outbound connection to Google is intermittently flaky (ECONNRESET on 10/10 04:15 and on a manual run 11/10 08:15 while Windows reached Google fine; recovered within ~3 min). Watch 12/10 04:15 run. User must Sleep (not Shut down) the PC overnight.
+
+---
 ## 2026-10-03 - Daily trigger fixed: WSL keepalive added, wake moved to 03:45, all hibernate sources disabled; Google OAuth credentials found expired
 
 Trigger: no post had fired for several days. Read-only diagnosis via Desktop Commander found three separate faults, none of them in the workflow itself:

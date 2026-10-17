@@ -6,30 +6,32 @@
 
 ## Last session
 
-**Date:** 2026-10-03
-**What was done (infra fix, workflow content untouched):**
+**Dates:** 2026-10-09 to 2026-10-18 (several short sessions)
+**What was done:**
 
-- **Diagnosed "never fires":** read-only first. Three faults: (1) n8n died ~60s after every start -- scripts exited, WSL idle-shut the VM; (2) wake never worked -- three hibernate sources (`Atlas_MorningSleep` 04:45, `SaptarshiOS_IdleSleep_6AM`, power plan hibernate-after 2h) and wake timers can't wake from hibernate; (3) Google Sheets OAuth credential expired (found on manual run).
-- **Fixed (user-approved, scoped to `_scripts\` + named tasks):** WSL keepalive in `boot-start-n8n.ps1`; `morning-wake-prep.ps1` now 03:45, stay-awake lock + WSL held until 06:00, no power-setting changes; `n8n-restore-sleep`, `Atlas_MorningSleep`, `SaptarshiOS_IdleSleep_6AM` disabled (not deleted); AC sleep 30 min, AC hibernate-after never. Applied by `_scripts\apply-fix-admin.ps1` via one UAC click.
-- **Verified:** n8n up 6+ min after fix (was ~60s); `n8n-morning-wake` next run 04/10 03:45, wake on.
-- Claude Desktop can't be run as admin (Store-style app) -- elevation done via `Start-Process -Verb RunAs` + UAC instead.
-- `n8n execute --id` CLI can't run this workflow (needs a Manual/Execute Workflow trigger; this one starts from Schedule). Manual runs go through the editor.
-- User got back into the n8n editor and ran the workflow manually -- failed at "Read Day Schedule": credential needs reconnecting.
+- **09/10 missed post:** PC was Shut down (not Sleep) on 08/10; wake timers can't wake from shutdown. User now Sleeps the PC overnight.
+- **09/10 "2025" in posts:** Generate Post Content prompt hardcoded "2025" twice. Prompt text rewritten (user's wording kept): up-to-date = last 3 months from machine date (Brisbane `$now`), facts from Post Description only, no year unless in source, "Include relevant lowercase hashtags."; Prompt 2 (User) message removed (its source-data injection moved into the prompt text). System message untouched.
+- **10/10 diagnosis:** every scheduled run since 26/09 had failed (DNS / ECONNRESET at Read Day Schedule) or misfired; only manual runs posted. Temp probe task `n8n-dns-probe-TEMP` (11/10, auto-deleted) showed DNS healthy.
+- **11/10 trigger drift:** n8n's 04:15 countdown freezes while the PC sleeps (WSL suspended), so the run drifted by each daytime sleep. Fix: `_scripts\morning-wake-prep.ps1` `docker start n8n` -> `docker restart n8n` (re-arms the trigger fresh at 03:45). Verified: 04:15 fired on time 12-18/10.
+- **15/10:** Gemini 503 "high demand" (provider-side). **16/10:** Google Sheets credential expired (OAuth app in Testing = 7-day tokens).
+- **16/10 OAuth to production:** GitHub Pages on this repo (master, `/docs`: `docs/index.md`, `docs/privacy.md`); Google Branding home/privacy links + authorised domain `saptarshi-ai.github.io`; app published "In production". User reconnected Sheets + Gmail 17/10.
+- **17/10:** Generate Post Content -> Retry On Fail, 3 tries, 5000 ms.
+- **18/10:** "Respond shows no Yes/No/Cancel" = not a fault. Each Respond link works once; old or already-answered emails show "No action required". Live workflow re-exported and pushed (`eed78f7`); docs, script and governance files pushed.
 
-**Decisions made:** see DECISIONS.md, four entries under 2026-10-03.
+**Guardrail breaches owned (18/10):** rule 6 (single approval for workflow/script edits), rule 8 (public repo `saptarshi-ai.github.io` created then deleted), rule 9 (extra session files in `_docs\sessions\` -- folded in here and removed). Going forward: plan -> proceed -> final go, and every change is exported + pushed to GitHub in the same session.
+
+**Decisions made:** see DECISIONS.md, entries dated 2026-10-09 to 2026-10-18.
 
 ---
 
 ## Next session -- start here
 
-1. **Check the 04/10 overnight run:** Kernel-Power wake event ~03:45; `_scripts\logs\n8n-tasks.log` `[morning]` lines; n8n Executions at 04:15. (Logs are local only, gitignored.)
-2. **Confirm credentials reconnected** (Google Sheets + Gmail) and whether the OAuth app was published to Production. If not published, it breaks again in 7 days.
-3. Once a few mornings run clean: revisit uninstalling Docker Desktop (still the rollback path).
-4. Phone approval still unsolved.
-5. Workflow-content items unchanged -- see TASKS.md.
+1. Open the **newest** approval email only; click Respond once.
+2. If a run fails: check n8n Executions first (node + error), then `_scripts\logs\n8n-tasks.log`.
+3. LinkedIn page visual refresh -- plan first (user request 18/10).
+4. Workflow-content items unchanged -- see TASKS.md.
 
-**Blockers:**
-- Expired Google credentials -- user action in n8n + Google Cloud Console.
+**Blockers:** none.
 
 ---
 
@@ -37,10 +39,10 @@
 
 | Question | Owner | Status |
 |----------|-------|--------|
-| Did the PC wake at 03:45 on 04/10 and run cleanly? | Claude to check with user | Open |
-| Was the Google OAuth app published to Production? | User | Open |
 | Does "No" + feedback regeneration actually resend a working email end-to-end? | User/Claude to test | Still open |
 | Does the GitHub/Wednesday branch actually work when it fires for real? | Untested live | Open |
+| Container -> Google connection dropped for ~3 min on 10/10 and 11/10 while Windows was fine. Recurring? | Claude to watch | Open |
+| Add the date to the approval email subject so old/new emails can't be confused? | User | Offered, not approved |
 
 ---
 

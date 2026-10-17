@@ -12,8 +12,8 @@ Add-Type -Namespace Win32 -Name Power -MemberDefinition '[DllImport("kernel32.dl
 [void][Win32.Power]::SetThreadExecutionState([uint32]2147483649)
 Log 'awake; stay-awake lock set'
 
-$out = (wsl.exe -d Ubuntu -- docker start n8n 2>&1) -join ' '
-Log "docker start n8n: $out"
+$out = (wsl.exe -d Ubuntu -- docker restart n8n 2>&1) -join ' '
+Log "docker restart n8n: $out"
 Start-Sleep -Seconds 5
 $state = (wsl.exe -d Ubuntu -- docker inspect -f '{{.State.Status}}' n8n 2>&1) -join ' '
 Log "n8n state: $state"
