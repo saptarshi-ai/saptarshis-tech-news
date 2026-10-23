@@ -5,6 +5,19 @@ Append at the top. One line per structural change.
 
 ---
 
+## 2026-10-24 - n8n container recreated (it had lost its network); VPN identified as cause of 20/10 outage
+
+Trigger: no post 21-23/10 (04:15 fired each day; Read Day Schedule failed in 5 s with "DNS server returned an error"), none 24/10 (PC off/restarted overnight). 20/10 failure was separate: Surfshark VPN (Colombia) broke WSL's internet and Google forced a Sheets re-login.
+Root cause 21-23/10: the n8n container was attached to no network at all (only loopback, no published port, resolv.conf 10.255.255.254). Docker logged "error locating sandbox id" on every daemon start since the 20/10 WSL restart (port 5678 clash) and the 21/10 unexpected reboot, so it started n8n without networking.
+Fix (24/10, user approved plan/proceed/final go):
+- Backup: `/home/sapta/n8n-backups/n8n_data_2026-10-24.tgz` (WSL), integrity ok.
+- `docker compose up -d --force-recreate` in `/home/sapta/n8n-deploy` -- compose file unchanged, data volume kept.
+- Verified: network n8n-deploy_default, port 5678, DNS 127.0.0.11, Google Sheets/OAuth/Gemini reachable, workflow active, trigger 04:15.
+- Tested both recovery paths: `docker restart n8n` (03:45 script) and `wsl --shutdown` + boot task -- network survives both, no daemon errors.
+- Manual run 24/10 posted (run 49).
+User rule: keep Surfshark VPN off on this PC overnight. No workflow or script change today.
+
+---
 ## 2026-10-17 - Google OAuth app moved to production (no more 7-day expiry); Retry On Fail on Generate Post Content; Pages site for OAuth
 
 Trigger: no post 15/10 and 16/10 although the 04:15 trigger fired both days (11/10 restart fix confirmed working 12-17/10).

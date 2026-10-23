@@ -22,7 +22,7 @@
 | 4 | [ ] Find a working Microsoft Purview feed, or accept description-only generation permanently for that subject | Currently falls back gracefully | |
 | 12 | [ ] Post length runs ~3,000 chars vs 2,600-2,800 target | Model treats the range as a guide | |
 | 13 | [ ] System message date anchor is a fixed (non-expression) field, so its $now expression is sent as literal text | Prompt text carries the live date since 09/10; fix only if posts drift on dates again | |
-| 14 | [ ] Watch for container -> Google connection drops (seen 10/10, 11/10) | Compose-level DNS/network fix only if it recurs, with user OK | |
+| 14 | [ ] Confirm 25/10 04:15 run after 24/10 container recreate; if container loses its network again, plan a 03:45 self-check | Causes found: VPN (20/10), lost container network (21-23/10) | |
 
 ## Done
 

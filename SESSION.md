@@ -4,6 +4,13 @@
 
 ---
 
+## Latest (2026-10-20 to 2026-10-24)
+
+- **20/10:** no post -- Surfshark VPN (Colombia) broke WSL's internet; Google forced a Sheets re-login. WSL restarted, credential reconnected, posted. User keeps VPN off overnight.
+- **21-23/10:** no post -- n8n container had lost its network ("error locating sandbox id" after the 20/10 WSL restart and 21/10 unexpected reboot). **24/10:** volume backed up, container recreated from the unchanged compose file, both restart paths tested OK, manual run posted.
+- **Next:** confirm the 25/10 04:15 run succeeds on its own. If the container ever loses its network again, plan a 03:45 self-check (needs full gate).
+
+---
 ## Last session
 
 **Dates:** 2026-10-09 to 2026-10-18 (several short sessions)
